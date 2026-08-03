@@ -349,7 +349,6 @@ function Step3({ sub }: { sub: number }) {
                       formula={`\\frac{${r.ci.toFixed(3)}}{${r.delta.toFixed(2)}} = ${ratio.toFixed(1)}\\times`}
                       block style={{ fontSize: isKimi ? '1.8em' : '1.4em', color: isKimi ? '#66bb6a' : r.color, flex: 1, textAlign: 'center', fontWeight: isKimi ? 900 : 700 }}
                     />
-                    <div style={{ fontSize: 12, color: isKimi ? '#66bb6a' : '#ef9a9a', fontWeight: 700, minWidth: 130, textAlign: 'right' }}>{r.noteRatio}</div>
                   </motion.div>
                 );
               })}
