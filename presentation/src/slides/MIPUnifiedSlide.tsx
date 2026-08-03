@@ -372,7 +372,7 @@ function Step3({ sub }: { sub: number }) {
 function Step4({ sub }: { sub: number }) {
   const formulaExpanded = sub <= 1;
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 18, justifyContent: formulaExpanded ? 'center' : 'flex-start' }}>
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 18, justifyContent: formulaExpanded ? 'center' : sub >= 3 ? 'flex-start' : 'center' }}>
 
       {/* Formula card — single box that animates in place */}
       <motion.div
@@ -426,37 +426,37 @@ function Step4({ sub }: { sub: number }) {
       {/* Before / after comparison — sub>=2 */}
       {sub >= 2 && (
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-          style={{ display: 'flex', gap: 16, justifyContent: 'center', alignItems: 'flex-start' }}>
+          style={{ display: 'flex', gap: 16, justifyContent: 'center', alignItems: 'center', flex: 1 }}>
 
           {/* G-optimal φ₁ */}
-          <div style={{ width: 380, padding: '18px 22px', borderRadius: 14, background: 'rgba(239,83,80,0.07)', border: '2px solid rgba(239,83,80,0.4)' }}>
-            <div style={{ fontSize: 14, color: '#ef9a9a', fontWeight: 700, marginBottom: 14, letterSpacing: '0.08em' }}>G-OPTIMAL — uses φ₁ only</div>
+          <div style={{ width: 400, padding: '22px 26px', borderRadius: 16, background: 'rgba(239,83,80,0.07)', border: '2px solid rgba(239,83,80,0.4)' }}>
+            <div style={{ fontSize: 14, color: '#ef9a9a', fontWeight: 700, marginBottom: 18, letterSpacing: '0.08em' }}>G-OPTIMAL — uses φ₁ only</div>
             {[
               { label: 'Fable–GPT',   val: EX2_PHI1_GPT,   color: '#ef5350' },
               { label: 'Fable–Kimi',  val: EX2_PHI1_KIMI,  color: '#66bb6a' },
               { label: 'Fable–Llama', val: EX2_PHI1_LLAMA, color: '#78909c' },
             ].map(r => (
-              <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+              <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                 <span style={{ fontSize: 20, color: r.color, fontWeight: 700 }}>{r.label}</span>
                 <MathFormula formula={r.val.toFixed(4)} style={{ display: 'inline', fontSize: '1.5em', color: r.color, fontWeight: 700 }} />
               </div>
             ))}
             <div style={{ borderTop: '1px solid rgba(239,83,80,0.3)', paddingTop: 10, fontSize: 17, color: '#ef9a9a', fontWeight: 700 }}>
-              Worst φ₁ = {EX2_PHI1_LLAMA.toFixed(4)} → Fable–Llama ✗
+              Worst φ₁ = {EX2_PHI1_LLAMA.toFixed(4)} → Fable–Llama
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', fontSize: 40, color: 'var(--gold)', fontWeight: 900 }}>→</div>
+          <div style={{ display: 'flex', alignItems: 'center', fontSize: 40, color: 'var(--gold)', fontWeight: 900, flexShrink: 0 }}>→</div>
 
           {/* Our φ = φ₁/Δ² */}
-          <div style={{ width: 380, padding: '18px 22px', borderRadius: 14, background: 'rgba(102,187,106,0.08)', border: '2px solid rgba(102,187,106,0.5)' }}>
-            <div style={{ fontSize: 14, color: '#66bb6a', fontWeight: 700, marginBottom: 14, letterSpacing: '0.08em' }}>OUR OBJECTIVE — φ = φ₁/Δ²</div>
+          <div style={{ width: 400, padding: '22px 26px', borderRadius: 16, background: 'rgba(102,187,106,0.08)', border: '2px solid rgba(102,187,106,0.5)' }}>
+            <div style={{ fontSize: 14, color: '#66bb6a', fontWeight: 700, marginBottom: 18, letterSpacing: '0.08em' }}>OUR OBJECTIVE — φ = φ₁/Δ²</div>
             {[
               { label: 'Fable–GPT',   val: EX2_PHI_GPT,   color: '#ef5350', note: '' },
               { label: 'Fable–Kimi',  val: EX2_PHI_KIMI,  color: '#66bb6a', note: '← bottleneck' },
               { label: 'Fable–Llama', val: EX2_PHI_LLAMA, color: '#78909c', note: '' },
             ].map(r => (
-              <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+              <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                 <span style={{ fontSize: 20, color: r.color, fontWeight: 700 }}>{r.label}</span>
                 <span style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                   <MathFormula formula={r.val.toFixed(2)} style={{ display: 'inline', fontSize: '1.5em', color: r.color, fontWeight: 700 }} />
@@ -465,7 +465,7 @@ function Step4({ sub }: { sub: number }) {
               </div>
             ))}
             <div style={{ borderTop: '1px solid rgba(102,187,106,0.3)', paddingTop: 10, fontSize: 17, color: '#66bb6a', fontWeight: 700 }}>
-              Worst φ = {EX2_PHI_KIMI.toFixed(2)} (Kimi) → Fable–Kimi ✓
+              Worst φ = {EX2_PHI_KIMI.toFixed(2)} (Kimi) → Fable–Kimi
             </div>
           </div>
         </motion.div>
