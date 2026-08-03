@@ -423,12 +423,12 @@ export function WiSDoMAlgorithmSlide() {
         {/* ══ ALGORITHM PANEL ══════════════════════════════════════════════════ */}
         <motion.div layout
           style={{
-            width: step === 0 ? '68%' : '52%',
+            width: step === 0 ? '68%' : '54%',
             flexShrink: 0,
             display: 'flex', flexDirection: 'column', gap: 0,
             padding: '14px 20px 12px', borderRadius: 18,
             background: 'var(--glass-02)', border: '1px solid var(--glass-09)',
-            overflowY: 'hidden', overflowX: 'hidden',
+            overflowY: 'auto', overflowX: 'hidden',
           }}
           transition={{ type: 'spring', stiffness: 130, damping: 24 }}
         >

@@ -301,10 +301,10 @@ function Step3({ sub }: { sub: number }) {
 
       {/* Left / Right split — rows revealed one at a time */}
       {sub >= 1 && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, minHeight: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
 
           {/* Two columns */}
-          <div style={{ flex: 1, display: 'flex', gap: 16, minHeight: 0 }}>
+          <div style={{ display: 'flex', gap: 16 }}>
 
             {/* LEFT — φ₁ boxes */}
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -315,7 +315,7 @@ function Step3({ sub }: { sub: number }) {
                 <motion.div key={r.label}
                   initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}
                   style={{
-                    flex: 1, padding: '12px 18px', borderRadius: 14, display: 'flex', alignItems: 'center', gap: 16,
+                    padding: '14px 18px', borderRadius: 14, display: 'flex', alignItems: 'center', gap: 16,
                     background: r.noteBox ? (r.color === '#78909c' ? 'rgba(239,83,80,0.08)' : 'rgba(239,83,80,0.05)') : 'var(--glass-04)',
                     border: `2px solid ${r.color}44`,
                   }}>
@@ -340,7 +340,7 @@ function Step3({ sub }: { sub: number }) {
                   <motion.div key={r.label}
                     initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
                     style={{
-                      flex: 1, padding: '12px 18px', borderRadius: 14, display: 'flex', alignItems: 'center', gap: 14,
+                      padding: '14px 18px', borderRadius: 14, display: 'flex', alignItems: 'center', gap: 14,
                       background: isKimi ? 'rgba(102,187,106,0.1)' : 'var(--glass-04)',
                       border: `2px solid ${isKimi ? '#66bb6a88' : r.color + '33'}`,
                     }}>

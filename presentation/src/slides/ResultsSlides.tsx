@@ -430,7 +430,7 @@ export function ExperimentSetupSlide() {
         >
           <div style={{ padding: '20px 28px', borderRadius: 16, background: 'rgba(232,197,71,0.06)', border: '1px solid rgba(232,197,71,0.25)', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 28 }}>
             <div style={{ fontSize: 14, color: 'var(--gold)', fontWeight: 700, letterSpacing: '0.1em' }}>
-              SYNTHETIC BTL — DIFFICULTY PARAMETER k &nbsp;·&nbsp; N=100, winner score=100, others ~U(0,k)
+              SYNTHETIC BTL — N=100 items &nbsp;·&nbsp; winner=100 &nbsp;·&nbsp; others ~U(0,k)
             </div>
 
             {([25, 75, 95] as KVal[]).map(kv => {
