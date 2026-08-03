@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { MathFormula } from '../components/MathFormula';
 
 // ── Types & constants ─────────────────────────────────────────────────────────
@@ -428,71 +428,45 @@ export function ExperimentSetupSlide() {
           transition={{ delay: 0.1 }}
           style={{ flex: 1.2, display: 'flex', flexDirection: 'column', gap: 12 }}
         >
-          <div style={{ padding: '20px 28px', borderRadius: 16, background: 'rgba(232,197,71,0.06)', border: '1px solid rgba(232,197,71,0.25)', flex: 1 }}>
-            <div style={{ fontSize: 14, color: 'var(--gold)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 16 }}>SYNTHETIC BTL — DIFFICULTY PARAMETER k</div>
-
-            <div style={{ fontSize: 21, color: "var(--text-secondary)", lineHeight: 1.75, marginBottom: 22 }}>
-              We generate <MathFormula formula="N=100" style={{ display: 'inline' }} /> items. The true winner always has score{' '}
-              <strong style={{ color: 'var(--text-primary)' }}>100</strong>.
-              All others draw scores from{' '}
-              <MathFormula formula="\mathcal{U}(0,\, k)" style={{ display: 'inline' }} /> independently.
+          <div style={{ padding: '20px 28px', borderRadius: 16, background: 'rgba(232,197,71,0.06)', border: '1px solid rgba(232,197,71,0.25)', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 28 }}>
+            <div style={{ fontSize: 14, color: 'var(--gold)', fontWeight: 700, letterSpacing: '0.1em' }}>
+              SYNTHETIC BTL — DIFFICULTY PARAMETER k &nbsp;·&nbsp; N=100, winner score=100, others ~U(0,k)
             </div>
 
-            {/* Visual: score axis for different k — labels BELOW bar, no overlap */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
-              {([25, 75, 95] as KVal[]).map(kv => {
-                const gap = 100 - kv;
-                const diffColor = gap > 50 ? '#66bb6a' : gap > 10 ? '#ffb74d' : '#ef9a9a';
-                const diffLabel = gap > 50 ? 'Easy' : gap > 10 ? 'Hard' : 'Very hard';
-                return (
-                  <div key={kv}>
-                    {/* Header row */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                      <span style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)' }}>k = {kv}</span>
-                      <span style={{ fontSize: 18, fontWeight: 700, color: diffColor }}>{diffLabel} — min gap <MathFormula formula={`\\geq ${gap}`} style={{ display:'inline' }} /></span>
-                    </div>
-                    {/* Bar — taller, no inline text */}
-                    <div style={{ position: 'relative', height: 36, background: 'var(--glass-04)', borderRadius: 8 }}>
-                      {/* Non-winner range */}
-                      <div style={{
-                        position: 'absolute', left: 0, top: 0, bottom: 0,
-                        width: `${kv}%`, borderRadius: '8px 0 0 8px',
-                        background: 'rgba(79,195,247,0.22)', border: '1px solid rgba(79,195,247,0.35)',
-                      }} />
-                      {/* Gap zone */}
-                      <div style={{
-                        position: 'absolute', left: `${kv}%`, top: 0, bottom: 0,
-                        width: `${gap}%`, borderRadius: '0 8px 8px 0',
-                        background: 'rgba(239,83,80,0.18)', border: '1px solid rgba(239,83,80,0.35)',
-                      }} />
-                      {/* Winner gold bar */}
-                      <div style={{
-                        position: 'absolute', right: 0, top: 0, bottom: 0, width: 8,
-                        background: 'var(--gold)', borderRadius: '0 8px 8px 0',
-                      }} />
-                    </div>
-                    {/* Labels below bar — never overlap */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 5 }}>
-                      <span style={{ fontSize: 15, color: "rgba(79,195,247,0.75)" }}>
-                        non-winners <MathFormula formula={`\\in U(0,${kv})`} style={{ display: 'inline' }} />
-                      </span>
-                      <span style={{ fontSize: 15, color: '#ef9a9a' }}>
-                        gap <MathFormula formula={`\\geq ${gap}`} style={{ display: 'inline' }} />
-                      </span>
-                      <span style={{ fontSize: 15, color: 'var(--gold)' }}>
-                        winner = 100 ●
-                      </span>
-                    </div>
+            {([25, 75, 95] as KVal[]).map(kv => {
+              const gap = 100 - kv;
+              const diffColor = gap > 50 ? '#66bb6a' : gap > 10 ? '#ffb74d' : '#ef9a9a';
+              const diffLabel = gap > 50 ? 'Easy' : gap > 10 ? 'Hard' : 'Very hard';
+              return (
+                <div key={kv}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                    <span style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)' }}>k = {kv}</span>
+                    <span style={{ fontSize: 20, fontWeight: 700, color: diffColor }}>{diffLabel} — min gap <MathFormula formula={`\\geq ${gap}`} style={{ display:'inline' }} /></span>
                   </div>
-                );
-              })}
-            </div>
-
-            <div style={{ marginTop: 14, padding: '12px 16px', borderRadius: 10, background: 'var(--glass-04)', border: '1px solid var(--glass-08)', fontSize: 19, color: "var(--text-secondary)", lineHeight: 1.6 }}>
-              <strong style={{ color: 'var(--text-primary)' }}>Smaller k = harder.</strong>{' '}
-              k=25 means the runner-up is at most 25 — a gap of at least 75, easy to find.{' '}
-              k=95 means the runner-up could be 95 — gap as small as 5, very hard to separate.
-            </div>
+                  <div style={{ position: 'relative', height: 44, background: 'var(--glass-04)', borderRadius: 10 }}>
+                    <div style={{
+                      position: 'absolute', left: 0, top: 0, bottom: 0,
+                      width: `${kv}%`, borderRadius: '10px 0 0 10px',
+                      background: 'rgba(79,195,247,0.22)', border: '1px solid rgba(79,195,247,0.35)',
+                    }} />
+                    <div style={{
+                      position: 'absolute', left: `${kv}%`, top: 0, bottom: 0,
+                      width: `${gap}%`, borderRadius: '0 10px 10px 0',
+                      background: 'rgba(239,83,80,0.18)', border: '1px solid rgba(239,83,80,0.35)',
+                    }} />
+                    <div style={{
+                      position: 'absolute', right: 0, top: 0, bottom: 0, width: 10,
+                      background: 'var(--gold)', borderRadius: '0 10px 10px 0',
+                    }} />
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}>
+                    <span style={{ fontSize: 14, color: "rgba(79,195,247,0.75)" }}>non-winners ∈ U(0,{kv})</span>
+                    <span style={{ fontSize: 14, color: '#ef9a9a' }}>gap ≥ {gap}</span>
+                    <span style={{ fontSize: 14, color: 'var(--gold)' }}>winner = 100</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </motion.div>
 
@@ -501,55 +475,30 @@ export function ExperimentSetupSlide() {
           transition={{ delay: 0.2 }}
           style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}
         >
-          <div style={{ padding: '18px 24px', borderRadius: 16, background: 'rgba(79,195,247,0.06)', border: '1px solid rgba(79,195,247,0.25)', flex: 1 }}>
-            <div style={{ fontSize: 15, color: 'var(--cyan)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 14 }}>EVALUATION METRICS</div>
+          <div style={{ padding: '18px 24px', borderRadius: 16, background: 'rgba(79,195,247,0.06)', border: '1px solid rgba(79,195,247,0.25)', flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <div style={{ fontSize: 15, color: 'var(--cyan)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 14, flexShrink: 0 }}>EVALUATION METRICS</div>
 
             {[
-              {
-                name: 'ACC',
-                full: 'Top-1 Accuracy',
-                color: '#66bb6a',
-                higher: true,
-                formula: String.raw`\mathbf{1}\bigl[\hat\imath = i^*\bigr]`,
-                desc: 'Did the algorithm return the true winner? 1 if yes, 0 if no. Averaged over 200 trials.',
-                good: 'Approaches 1.0 as budget grows',
-              },
-              {
-                name: 'CT',
-                full: 'Predicted Rank',
-                color: '#ffb74d',
-                higher: false,
-                formula: String.raw`\text{rank}(\hat\imath)`,
-                desc: 'The true rank of the predicted winner. If the algorithm picks the true winner, CT=1. If it picks the 3rd-best, CT=3.',
-                good: 'Lower is better — 1 is perfect',
-              },
-              {
-                name: 'PF',
-                full: 'True Winner Rank',
-                color: '#ef9a9a',
-                higher: false,
-                formula: String.raw`\text{rank}(i^*)`,
-                desc: 'Where does the algorithm rank the true winner? PF=1 means the true winner was ranked #1. PF=50 means it was buried.',
-                good: 'Lower is better — 1 is perfect',
-              },
+              { name: 'ACC', full: 'Accuracy — Correct Winner', color: '#66bb6a', higher: true,  formula: String.raw`\mathbf{1}\bigl[\hat\imath = i^*\bigr]` },
+              { name: 'CT',  full: 'Competitor Rank — Rank of predicted winner', color: '#ffb74d', higher: false, formula: String.raw`\text{rank}(\hat\imath)` },
+              { name: 'PF',  full: 'Predicted Final — Rank of true winner', color: '#ef9a9a', higher: false, formula: String.raw`\text{rank}(i^*)` },
             ].map((m, i) => (
               <motion.div key={m.name} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + i * 0.1 }}
                 style={{
-                  padding: '18px 22px', borderRadius: 14, marginBottom: 12,
+                  flex: 1, padding: '0 28px', borderRadius: 16,
                   background: `${m.color}10`, border: `1.5px solid ${m.color}44`,
+                  display: 'flex', alignItems: 'center', gap: 28,
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 8 }}>
-                  <span style={{ fontSize: 26, fontWeight: 900, color: m.color }}>{m.name}</span>
-                  <span style={{ fontSize: 15, color: 'var(--text-secondary)' }}>{m.full}</span>
-                  <span style={{ marginLeft: 'auto', fontSize: 12, color: m.higher ? '#66bb6a' : '#ffb74d', fontWeight: 600 }}>
-                    {m.higher ? '↑ higher better' : '↓ lower better'}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 80, flexShrink: 0 }}>
+                  <span style={{ fontSize: 42, fontWeight: 900, color: m.color, fontFamily: "'Space Grotesk',sans-serif" }}>{m.name}</span>
+                  <span style={{ fontSize: 15, color: m.higher ? '#66bb6a' : '#ffb74d', fontWeight: 700 }}>
+                    {m.higher ? '↑ higher' : '↓ lower'}
                   </span>
                 </div>
-                <MathFormula formula={m.formula} style={{ fontSize: '1.1em', marginBottom: 8 }} block />
-                <div style={{ fontSize: 18, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{m.desc}</div>
-                <div style={{ marginTop: 6, fontSize: 16, color: m.color, fontWeight: 600 }}>{m.good}</div>
+                <MathFormula formula={m.formula} block style={{ fontSize: '2.2em', flex: 1, textAlign: 'center' }} />
+                <div style={{ fontSize: 15, color: 'var(--text-muted)', maxWidth: 180, lineHeight: 1.5, flexShrink: 0 }}>{m.full}</div>
               </motion.div>
             ))}
           </div>
@@ -776,11 +725,31 @@ const RW_DATASETS_DESC: DSDesc[] = [
 ];
 
 export function RealWorldSetupSlide() {
+  const [sub, setSub] = React.useState(0);
+
+  React.useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft' && sub > 0) {
+        e.stopPropagation(); e.preventDefault(); setSub(0);
+      } else if ((e.key === 'ArrowRight' || e.key === ' ') && sub < 1) {
+        e.stopPropagation(); e.preventDefault(); setSub(1);
+      }
+    };
+    window.addEventListener('keydown', h, true);
+    return () => window.removeEventListener('keydown', h, true);
+  }, [sub]);
+
+  const REAL_CARDS = [
+    { icon: '💬', label: 'Chatbot Arena',    color: 'var(--gold)', hard: true,  N: 20,  B: 100, line: 'Top-20 LLMs · Elo from real human preferences · GPT-4 is true winner' },
+    { icon: '🎬', label: 'Netflix · MovieLens', color: '#ef5350', hard: true,  N: 20,  B: 100, line: 'Top-20 movies by average user rating · BTL fitted to rating data' },
+    { icon: '😂', label: 'Jester · Sushi-B', color: '#66bb6a', hard: false, N: 20,  B: 100, line: 'Joke ratings & sushi rankings · winner clearly separated' },
+  ];
+
   return (
     <div style={{
       width: '100vw', height: '100vh', background: 'var(--bg)',
       padding: '16px 60px 30px', boxSizing: 'border-box',
-      display: 'flex', flexDirection: 'column', gap: 14, overflow: 'hidden',
+      display: 'flex', flexDirection: 'column', gap: 16, overflow: 'hidden',
     }}>
       <div style={{ flexShrink: 0 }}>
         <div className="label" style={{ marginBottom: 4 }}>Experiments · Real World</div>
@@ -789,55 +758,101 @@ export function RealWorldSetupSlide() {
         </h1>
       </div>
 
-      <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, minHeight: 0 }}>
-        {RW_DATASETS_DESC.map((ds, i) => (
-          <motion.div key={ds.key}
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08, type: 'spring', stiffness: 150, damping: 22 }}
-            style={{
-              padding: '20px 26px', borderRadius: 16,
-              background: `${ds.color}0e`, border: `2px solid ${ds.color}44`,
-              display: 'flex', flexDirection: 'column', gap: 12, overflow: 'hidden',
-            }}
-          >
-            {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
-              <span style={{ fontSize: 28 }}>{ds.icon}</span>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: ds.color, lineHeight: 1.15 }}>{ds.label}</div>
-                <div style={{ display: 'flex', gap: 8, marginTop: 5 }}>
+      <AnimatePresence mode="wait">
+        {sub === 0 ? (
+          <motion.div key="real" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
+            style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {REAL_CARDS.map((ds, i) => (
+              <motion.div key={ds.label}
+                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08 }}
+                style={{
+                  flex: 1, padding: '0 32px', borderRadius: 16,
+                  background: `${ds.color === 'var(--gold)' ? 'rgba(232,197,71' : ds.color === '#ef5350' ? 'rgba(239,83,80' : 'rgba(102,187,106'},0.07)`,
+                  border: `2px solid ${ds.color === 'var(--gold)' ? 'rgba(232,197,71' : ds.color === '#ef5350' ? 'rgba(239,83,80' : 'rgba(102,187,106'},0.4)`,
+                  display: 'flex', alignItems: 'center', gap: 28,
+                }}>
+                <span style={{ fontSize: 40, flexShrink: 0 }}>{ds.icon}</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 28, fontWeight: 800, color: ds.color, marginBottom: 6 }}>{ds.label}</div>
+                  <div style={{ fontSize: 18, color: 'var(--text-secondary)' }}>{ds.line}</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10, flexShrink: 0 }}>
                   <span style={{
-                    fontSize: 13, fontWeight: 700, padding: '2px 9px', borderRadius: 5,
+                    fontSize: 14, fontWeight: 700, padding: '4px 12px', borderRadius: 6,
                     background: ds.hard ? 'rgba(239,83,80,0.18)' : 'rgba(102,187,106,0.18)',
                     color: ds.hard ? '#ef9a9a' : '#66bb6a',
-                  }}>{ds.difficulty}</span>
-                  <span style={{ fontSize: 13, color: 'var(--text-secondary)', padding: '2px 9px', borderRadius: 5, background: 'var(--glass-06)' }}>
-                    N={ds.N}, B={ds.B}
-                  </span>
+                  }}>{ds.hard ? 'Hard' : 'Easy'}</span>
+                  <div style={{ display: 'flex', gap: 24, alignItems: 'flex-end' }}>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 52, fontWeight: 900, color: ds.color, fontFamily: "'Space Grotesk',sans-serif", lineHeight: 1 }}>{ds.N}</div>
+                      <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>Items</div>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 52, fontWeight: 900, color: ds.color, fontFamily: "'Space Grotesk',sans-serif", lineHeight: 1 }}>{ds.B}</div>
+                      <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>Budget</div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+            <div style={{ fontSize: 14, color: 'var(--glass-25)', textAlign: 'center', flexShrink: 0 }}>→ press to see DMControl</div>
+          </motion.div>
+        ) : (
+          <motion.div key="dm" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
+            style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {/* DMControl header card */}
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+              style={{ padding: '24px 36px', borderRadius: 16, background: 'rgba(206,147,216,0.08)', border: '2px solid rgba(206,147,216,0.45)', flexShrink: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 14 }}>
+                <span style={{ fontSize: 48 }}>🤖</span>
+                <div>
+                  <div style={{ fontSize: 32, fontWeight: 800, color: '#ce93d8' }}>DMControl (MuJoCo)</div>
+                  <div style={{ fontSize: 18, color: 'var(--text-secondary)', marginTop: 4 }}>
+                    N=100 open-loop walker policies · reward r_i = cumulative reward over 150 steps
+                  </div>
+                </div>
+                <div style={{ marginLeft: 'auto', display: 'flex', gap: 24, alignItems: 'flex-end', flexShrink: 0 }}>
+                  {[['100','Items'],['500','Budget']].map(([val,lbl]) => (
+                    <div key={lbl} style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 52, fontWeight: 900, color: '#ce93d8', fontFamily: "'Space Grotesk',sans-serif", lineHeight: 1 }}>{val}</div>
+                      <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>{lbl}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
+              <div style={{ fontSize: 16, color: 'var(--text-muted)', marginBottom: 6 }}>Pairwise oracle:</div>
+              <MathFormula
+                formula={String.raw`p(i \succ j) = \text{Bernoulli}\!\left(\frac{s_i}{s_i+s_j}\right), \quad s_i = e^{r_i/T}`}
+                block style={{ fontSize: '1.6em' }}
+              />
+              <div style={{ fontSize: 16, color: 'var(--text-secondary)', marginTop: 8 }}>
+                Higher <strong style={{ color: '#ce93d8' }}>T</strong> compresses scores → noisier comparisons → harder
+              </div>
+            </motion.div>
 
-            {/* What */}
-            <div style={{ fontSize: 17, color: 'var(--text-secondary)', lineHeight: 1.6, flexShrink: 0 }}>
-              <span style={{ color: ds.color, fontWeight: 700 }}>What: </span>{ds.what}
-            </div>
-
-            {/* How pairwise works */}
-            <div style={{ fontSize: 16, color: 'var(--text-secondary)', lineHeight: 1.6, flex: 1 }}>
-              <span style={{ color: 'var(--cyan)', fontWeight: 700 }}>Pairwise oracle: </span>{ds.pairwise}
-            </div>
-
-            {/* Why */}
-            <div style={{
-              fontSize: 15, color: 'var(--glass-50)', lineHeight: 1.55, flexShrink: 0,
-              borderTop: `1px solid ${ds.color}22`, paddingTop: 10,
-            }}>
-              <span style={{ color: 'var(--glass-65)', fontWeight: 600 }}>Difficulty: </span>{ds.why}
-            </div>
+            {/* T variants */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+              style={{ flex: 1, display: 'flex', gap: 16 }}>
+              {[
+                { T: 20,  label: 'Easy',     color: '#66bb6a', note: 'Policies clearly separated' },
+                { T: 100, label: 'Hard',     color: '#ffb74d', note: 'Top policies close in reward' },
+                { T: 200, label: 'Very hard',color: '#ef5350', note: 'Nearly indistinguishable at top' },
+              ].map(t => (
+                <div key={t.T} style={{
+                  flex: 1, borderRadius: 16, textAlign: 'center',
+                  background: `${t.color}10`, border: `2px solid ${t.color}44`,
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16,
+                }}>
+                  <div style={{ fontSize: 64, fontWeight: 900, color: t.color, fontFamily: "'Space Grotesk',sans-serif", lineHeight: 1 }}>T={t.T}</div>
+                  <span style={{ fontSize: 18, fontWeight: 700, padding: '6px 20px', borderRadius: 8, background: `${t.color}20`, color: t.color }}>{t.label}</span>
+                  <div style={{ fontSize: 20, color: 'var(--text-secondary)', padding: '0 24px' }}>{t.note}</div>
+                </div>
+              ))}
+            </motion.div>
           </motion.div>
-        ))}
-      </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
