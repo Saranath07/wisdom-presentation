@@ -346,7 +346,7 @@ function Step3({ sub }: { sub: number }) {
                     }}>
                     <div style={{ minWidth: 110, fontSize: 16, color: r.color, fontWeight: 700 }}>{r.label}</div>
                     <MathFormula
-                      formula={`\\frac{${r.ci.toFixed(3)}}{${r.delta.toFixed(2)}} = ${ratio.toFixed(1)}\\times`}
+                      formula={`\\frac{${r.ci.toFixed(3)}}{${r.delta.toFixed(2)}} = ${ratio.toFixed(1)}`}
                       block style={{ fontSize: isKimi ? '1.8em' : '1.4em', color: isKimi ? '#66bb6a' : r.color, flex: 1, textAlign: 'center', fontWeight: isKimi ? 900 : 700 }}
                     />
                   </motion.div>
@@ -359,7 +359,7 @@ function Step3({ sub }: { sub: number }) {
           {sub >= 3 && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
               style={{ padding: '14px 24px', borderRadius: 14, background: 'rgba(102,187,106,0.12)', border: '2px solid rgba(102,187,106,0.5)', fontSize: 20, color: '#66bb6a', fontWeight: 700, textAlign: 'center', flexShrink: 0 }}>
-              Kimi {(EX2_CI_KIMI/EX2_DELTA_KIMI).toFixed(1)}× is highest — missed by both obvious choice and G-optimal
+              Kimi = {(EX2_CI_KIMI/EX2_DELTA_KIMI).toFixed(1)} is highest — missed by both obvious choice and G-optimal
             </motion.div>
           )}
         </div>
@@ -414,11 +414,11 @@ function Step4({ sub }: { sub: number }) {
             </AnimatePresence>
           </div>
         ) : (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ display: 'flex', gap: 20, alignItems: 'center', justifyContent: 'center' }}>
-            <MathFormula formula={String.raw`\varphi_1^{(j)}`} style={{ display: 'inline', fontSize: '1.4em', color: '#ef9a9a' }} />
-            <span style={{ color: 'var(--gold)', fontSize: 22, fontWeight: 900 }}>÷ Δ²</span>
-            <span style={{ color: 'var(--text-secondary)', fontSize: 18 }}>→</span>
-            <MathFormula formula={String.raw`\varphi^{(j)} = \frac{\varphi_1^{(j)}}{\Delta_{wj}^2}`} style={{ display: 'inline', fontSize: '1.4em', color: '#66bb6a' }} />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <MathFormula
+              formula={String.raw`\varphi^{(j)} = \frac{(e_w - e_j)^\top I(\theta;\lambda)^{-1}(e_w - e_j)}{\Delta^2_{wj}}`}
+              block style={{ fontSize: '1.6em', color: 'var(--gold)' }}
+            />
           </motion.div>
         )}
       </motion.div>
