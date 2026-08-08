@@ -106,7 +106,7 @@ function LineChart({
         <text x={W} y={-6} textAnchor="end" fill="var(--text-secondary)" fontSize={11}>
           {higherBetter ? '↑ higher better' : '↓ lower better'}
         </text>
-        {/* Lines — non-WiSDoM faded */}
+        {/* Lines - non-WiSDoM faded */}
         {ALGOS.filter(a => a.key !== 'Robust-FW').map(a => (
           <path key={a.key} d={pathFor(a.key)} fill="none"
             stroke={a.color} strokeWidth={a.width} strokeOpacity={0.75} />
@@ -147,7 +147,7 @@ function Legend({ compact = false }: { compact?: boolean }) {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// THEORY SLIDE 1 — Lower-bound theorem
+// THEORY SLIDE 1 - Lower-bound theorem
 // ══════════════════════════════════════════════════════════════════════════════
 export function LowerBoundTheoremSlide() {
   const ML = (f: string) => <MathFormula formula={f} style={{ display: 'inline', fontSize: '1.05em' }} />;
@@ -164,7 +164,7 @@ export function LowerBoundTheoremSlide() {
         </h1>
       </div>
 
-      {/* Setup — pure LaTeX */}
+      {/* Setup - pure LaTeX */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
         style={{ padding: '20px 28px', borderRadius: 14, background: 'var(--glass-03)', border: '1px solid var(--glass-10)', flexShrink: 0 }}
       >
@@ -180,12 +180,12 @@ export function LowerBoundTheoremSlide() {
         </div>
       </motion.div>
 
-      {/* Theorem — full LaTeX, large */}
+      {/* Theorem - full LaTeX, large */}
       <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.25, type: 'spring', stiffness: 130, damping: 22 }}
         style={{ padding: '26px 36px', borderRadius: 18, background: 'rgba(232,197,71,0.07)', border: '2px solid rgba(232,197,71,0.5)', flexShrink: 0 }}
       >
         <div style={{ fontSize: 15, color: 'var(--gold)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 16 }}>
-          THEOREM 1 — MULTI-TIER LOWER BOUND &nbsp;(proof in supplementary)
+          THEOREM 1: MULTI-TIER LOWER BOUND &nbsp;(proof in supplementary)
         </div>
         <MathFormula
           formula={String.raw`P(w \notin S) \;\geq\; \frac{1}{4}\exp\!\left(-\;\frac{2B\,\Delta_{\ell^*}^2}{\Bigl(0.25 - \Delta_{\ell^*}^2\Bigr)\!\Bigl(\sum_{j \le \ell^*} n_j - K + 1\Bigr)}\right)`}
@@ -193,16 +193,16 @@ export function LowerBoundTheoremSlide() {
         />
         <div style={{ marginTop: 14, fontSize: 20, color: 'var(--text-secondary)', lineHeight: 1.65 }}>
           {ML('S')} = returned set of size {ML('K')}. &nbsp;
-          Bound is <strong style={{ color: 'var(--gold)' }}>exponential in {ML('B\\Delta_{\\ell^*}^2/(N-K)')}</strong> — the same quantity WiSDoM minimises.
+          Bound is <strong style={{ color: 'var(--gold)' }}>exponential in {ML('B\\Delta_{\\ell^*}^2/(N-K)')}</strong>, the same quantity WiSDoM minimises.
         </div>
       </motion.div>
 
-      {/* Corollary — 2 lines only */}
+      {/* Corollary - 2 lines only */}
       <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.45 }}
         style={{ padding: '20px 28px', borderRadius: 14, background: 'rgba(79,195,247,0.06)', border: '1px solid rgba(79,195,247,0.3)', flexShrink: 0 }}
       >
         <div style={{ fontSize: 15, color: 'var(--cyan)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 12 }}>
-          COROLLARY — FLAT SINGLE-GAP REGIME
+          COROLLARY: FLAT SINGLE-GAP REGIME
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
           <MathFormula
@@ -211,7 +211,7 @@ export function LowerBoundTheoremSlide() {
           />
           <div style={{ fontSize: 20, color: 'var(--text-secondary)', lineHeight: 1.7, flex: 1 }}>
             {ML('\\log P(\\text{fail})')} is <strong style={{ color: 'var(--cyan)' }}>linear in {ML('\\displaystyle\\frac{\\delta_1^2}{0.25-\\delta_1^2}')}</strong>.{' '}
-            Empirical slope {ML('\\approx -1.5')} vs bound slope {ML('-10.1')} — verified next slide.
+            Empirical slope {ML('\\approx -1.5')} vs bound slope {ML('-10.1')}, verified next slide.
           </div>
         </div>
       </motion.div>
@@ -220,7 +220,7 @@ export function LowerBoundTheoremSlide() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// THEORY SLIDE 2 — Empirical validation (interactive log P(fail) plot)
+// THEORY SLIDE 2 - Empirical validation (interactive log P(fail) plot)
 // ══════════════════════════════════════════════════════════════════════════════
 
 interface LBRow { d: number; delta: number; acc: number; p_fail: number; lb_new: number; lb_old: number; x_axis: number }
@@ -282,7 +282,7 @@ export function EmpiricalValidationSlide() {
       <div style={{ flexShrink: 0 }}>
         <div className="label" style={{ marginBottom: 4 }}>Theory · Empirical Validation</div>
         <h1 style={{ fontSize: 38, margin: 0 }}>
-          {ML2('\\log P(\\text{fail})')} is linear in {ML2('\\delta_1^2/(0.25 - \\delta_1^2)')} — <span style={{ color: 'var(--gold)' }}>bound confirmed</span>
+          {ML2('\\log P(\\text{fail})')} is linear in {ML2('\\delta_1^2/(0.25 - \\delta_1^2)')}: <span style={{ color: 'var(--gold)' }}>bound confirmed</span>
         </h1>
       </div>
 
@@ -339,7 +339,7 @@ export function EmpiricalValidationSlide() {
                     />
                   ))}
 
-                  {/* Lower bound path — only where LB is visible */}
+                  {/* Lower bound path - only where LB is visible */}
                   <path d={ptPath(logLBNew, validLB.map(r => r.x_axis))} fill="none" stroke="#ef5350" strokeWidth={2} strokeDasharray="5,3" strokeOpacity={0.9} />
                   {validLB.map((r, i) => (
                     <rect key={i}
@@ -396,7 +396,7 @@ export function EmpiricalValidationSlide() {
           </div>
 
           <div style={{ padding: '14px 18px', borderRadius: 12, background: 'rgba(79,195,247,0.07)', border: '1px solid rgba(79,195,247,0.3)', fontSize: 16, color: 'var(--text-secondary)', lineHeight: 1.65 }}>
-            Both curves are linear — confirming the <strong style={{ color: 'var(--cyan)' }}>exponential decay form</strong> of the bound. Closing the gap between {ML2('-1.5')} and {ML2('-10.1')} is the main open theoretical question.
+            Both curves are linear, confirming the <strong style={{ color: 'var(--cyan)' }}>exponential decay form</strong> of the bound. Closing the gap between {ML2('-1.5')} and {ML2('-10.1')} is the main open theoretical question.
           </div>
         </div>
       </div>
@@ -405,7 +405,7 @@ export function EmpiricalValidationSlide() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 0 — Experiment setup explainer (synthetic difficulty + metrics)
+// SLIDE 0 - Experiment setup explainer (synthetic difficulty + metrics)
 // ══════════════════════════════════════════════════════════════════════════════
 export function ExperimentSetupSlide() {
   return (
@@ -430,7 +430,7 @@ export function ExperimentSetupSlide() {
         >
           <div style={{ padding: '20px 28px', borderRadius: 16, background: 'rgba(232,197,71,0.06)', border: '1px solid rgba(232,197,71,0.25)', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 28 }}>
             <div style={{ fontSize: 14, color: 'var(--gold)', fontWeight: 700, letterSpacing: '0.1em' }}>
-              SYNTHETIC BTL — N=100 items &nbsp;·&nbsp; winner=100 &nbsp;·&nbsp; others ~U(0,k)
+              SYNTHETIC BTL: N=100 items &nbsp;·&nbsp; winner=100 &nbsp;·&nbsp; others ~U(0,k)
             </div>
 
             {([25, 75, 95] as KVal[]).map(kv => {
@@ -441,7 +441,7 @@ export function ExperimentSetupSlide() {
                 <div key={kv}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                     <span style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)' }}>k = {kv}</span>
-                    <span style={{ fontSize: 20, fontWeight: 700, color: diffColor }}>{diffLabel} — min gap <MathFormula formula={`\\geq ${gap}`} style={{ display:'inline' }} /></span>
+                    <span style={{ fontSize: 20, fontWeight: 700, color: diffColor }}>{diffLabel}: min gap <MathFormula formula={`\\geq ${gap}`} style={{ display:'inline' }} /></span>
                   </div>
                   <div style={{ position: 'relative', height: 44, background: 'var(--glass-04)', borderRadius: 10 }}>
                     <div style={{
@@ -479,9 +479,9 @@ export function ExperimentSetupSlide() {
             <div style={{ fontSize: 15, color: 'var(--cyan)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 14, flexShrink: 0 }}>EVALUATION METRICS</div>
 
             {[
-              { name: 'ACC', full: 'Accuracy — Correct Winner', color: '#66bb6a', higher: true,  formula: String.raw`\mathbf{1}\bigl[\hat\imath = i^*\bigr]` },
-              { name: 'CT',  full: 'Competitor Rank — Rank of predicted winner', color: '#ffb74d', higher: false, formula: String.raw`\text{rank}(\hat\imath)` },
-              { name: 'PF',  full: 'Predicted Final — Rank of true winner', color: '#ef9a9a', higher: false, formula: String.raw`\text{rank}(i^*)` },
+              { name: 'ACC', full: 'Accuracy: Correct Winner', color: '#66bb6a', higher: true,  formula: String.raw`\mathbf{1}\bigl[\hat\imath = i^*\bigr]` },
+              { name: 'CT',  full: 'Competitor Rank: Rank of predicted winner', color: '#ffb74d', higher: false, formula: String.raw`\text{rank}(\hat\imath)` },
+              { name: 'PF',  full: 'Predicted Final: Rank of true winner', color: '#ef9a9a', higher: false, formula: String.raw`\text{rank}(i^*)` },
             ].map((m, i) => (
               <motion.div key={m.name} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + i * 0.1 }}
@@ -510,7 +510,7 @@ export function ExperimentSetupSlide() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 1 — Synthetic results: interactive k + metric
+// SLIDE 1 - Synthetic results: interactive k + metric
 // ══════════════════════════════════════════════════════════════════════════════
 export function SyntheticResultsSlide() {
   const [k, setK] = useState<KVal>(75);
@@ -541,7 +541,7 @@ export function SyntheticResultsSlide() {
       <div style={{ flexShrink: 0 }}>
         <div className="label" style={{ marginBottom: 4 }}>Experiments · Synthetic BTL</div>
         <h1 style={{ fontSize: 36, margin: 0 }}>
-          {mInfo.label} vs Budget — <span style={{ color: 'var(--gold)' }}>interactive difficulty</span>
+          {mInfo.label} vs Budget: <span style={{ color: 'var(--gold)' }}>interactive difficulty</span>
         </h1>
       </div>
 
@@ -562,7 +562,7 @@ export function SyntheticResultsSlide() {
                 color: metric === m ? 'var(--gold)' : 'var(--text-secondary)',
                 fontSize: 14, fontWeight: metric === m ? 700 : 400,
               }}>
-                <div>{m} — {METRIC_INFO[m].label.split(' ')[0]}</div>
+                <div>{m}: {METRIC_INFO[m].label.split(' ')[0]}</div>
                 <div style={{ fontSize: 10, opacity: 0.7, marginTop: 1 }}>{METRIC_INFO[m].higher ? '↑ higher better' : '↓ lower better'}</div>
               </button>
             ))}
@@ -654,7 +654,7 @@ export function SyntheticResultsSlide() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 2 — Real-world results
+// SLIDE 2 - Real-world results
 // ══════════════════════════════════════════════════════════════════════════════
 const REAL_DATASETS = [
   { key: 'arena',          label: 'Chatbot Arena',   desc: 'Top-20 LLMs, N=20, human prefs', difficulty: 'Hard' as const },
@@ -692,7 +692,7 @@ const RW_DATASETS_DESC: DSDesc[] = [
     difficulty: 'Hard (T=100, T=200) · Easy (T=20)',
     hard: true, icon: '🤖', N: 100, B: 500,
     what: <>{ML('N=100')} open-loop walker policies. Each policy runs for 150 steps and returns cumulative reward {ML('r_i')}.</>,
-    pairwise: <>A query on pair {ML('(i,j)')} draws Bernoulli{ML('\\left(\\frac{s_i}{s_i+s_j}\\right)')} where {ML('s_i = \\exp(r_i/T)')}. Temperature {ML('T')} controls difficulty — higher {ML('T')} compresses scores, making comparisons noisier.</>,
+    pairwise: <>A query on pair {ML('(i,j)')} draws Bernoulli{ML('\\left(\\frac{s_i}{s_i+s_j}\\right)')} where {ML('s_i = \\exp(r_i/T)')}. Temperature {ML('T')} controls difficulty: higher {ML('T')} compresses scores, making comparisons noisier.</>,
     why: <>Hardest benchmark: semi-synthetic with real physics, ground truth known. {ML('T=200')} makes top policies nearly indistinguishable.</>,
   },
   {
@@ -702,7 +702,7 @@ const RW_DATASETS_DESC: DSDesc[] = [
     difficulty: 'Hard', hard: true, icon: '💬', N: 20, B: 100,
     what: <>Top-{ML('20')} LLMs from lmsys/chatbot_arena. Elo scores bootstrapped from real human preference votes. {ML('B = 5N = 100')}.</>,
     pairwise: <>Human annotator sees two LLM responses and picks a winner. Preference drawn from BTL model {ML('p(i \\succ j) = w_i/(w_i+w_j)')} fitted to arena data. GPT-4 is the true winner {ML('i^*')}.</>,
-    why: <>True RLHF-scale evaluation. Top-{ML('20')} LLM scores cluster tightly — separating {ML('i^*')} requires precise, targeted queries.</>,
+    why: <>True RLHF-scale evaluation. Top-{ML('20')} LLM scores cluster tightly; separating {ML('i^*')} requires precise, targeted queries.</>,
   },
   {
     key: 'rating',
@@ -711,7 +711,7 @@ const RW_DATASETS_DESC: DSDesc[] = [
     difficulty: 'Hard', hard: true, icon: '🎬', N: 20, B: 100,
     what: <>Top-{ML('20')} movies by average user rating from Netflix Prize and MovieLens. {ML('B = 5N = 100')}.</>,
     pairwise: <>BTL weights {ML('\\{w_i\\}')} fitted to user rating data via MLE. Oracle draws {ML('\\text{Bernoulli}\\!\\left(w_i/(w_i+w_j)\\right)')} to simulate a user preference query.</>,
-    why: <>Popular movies have nearly identical ratings — small {ML('\\Delta_{wj}^2')} makes winner identification genuinely hard under a tight budget.</>,
+    why: <>Popular movies have nearly identical ratings; small {ML('\\Delta_{wj}^2')} makes winner identification genuinely hard under a tight budget.</>,
   },
   {
     key: 'easy',
@@ -719,7 +719,7 @@ const RW_DATASETS_DESC: DSDesc[] = [
     color: '#66bb6a',
     difficulty: 'Easy', hard: false, icon: '😂', N: 20, B: 100,
     what: <>Jester: joke ratings on {ML('[-10,+10]')} scale. Sushi-B: {ML('100')} users fully rank {ML('10')} sushi types (Kamishima 2003). {ML('B = 5N = 100')}.</>,
-    pairwise: <>Same BTL fitting pipeline. Oracle draws from {ML('p(i \\succ j) = w_i/(w_i+w_j)')}. Winner is clearly separated — large {ML('\\Delta_{1} = \\theta_{i^*} - \\max_{j \\ne i^*}\\theta_j')}.</>,
+    pairwise: <>Same BTL fitting pipeline. Oracle draws from {ML('p(i \\succ j) = w_i/(w_i+w_j)')}. Winner is clearly separated, with large {ML('\\Delta_{1} = \\theta_{i^*} - \\max_{j \\ne i^*}\\theta_j')}.</>,
     why: <>Easy regime with large score gaps. Used to verify no algorithm catastrophically fails on simple instances.</>,
   },
 ];
@@ -754,7 +754,7 @@ export function RealWorldSetupSlide() {
       <div style={{ flexShrink: 0 }}>
         <div className="label" style={{ marginBottom: 4 }}>Experiments · Real World</div>
         <h1 style={{ fontSize: 40, margin: 0 }}>
-          Real-world datasets — <span style={{ color: 'var(--gold)' }}>6 benchmarks</span>
+          Real-world datasets: <span style={{ color: 'var(--gold)' }}>6 benchmarks</span>
         </h1>
       </div>
 
@@ -887,7 +887,7 @@ export function RealWorldResultsSlide() {
       <div style={{ flexShrink: 0 }}>
         <div className="label" style={{ marginBottom: 4 }}>Experiments · Real World</div>
         <h1 style={{ fontSize: 36, margin: 0 }}>
-          {mInfo.label} vs Budget — <span style={{ color: 'var(--gold)' }}>real datasets</span>
+          {mInfo.label} vs Budget: <span style={{ color: 'var(--gold)' }}>real datasets</span>
         </h1>
       </div>
 
@@ -908,7 +908,7 @@ export function RealWorldResultsSlide() {
                 color: metric === m ? 'var(--gold)' : 'var(--text-secondary)',
                 fontSize: 13, fontWeight: metric === m ? 700 : 400,
               }}>
-                {m} — {METRIC_INFO[m].label.split(' ')[0]}
+                {m}: {METRIC_INFO[m].label.split(' ')[0]}
               </button>
             ))}
           </div>

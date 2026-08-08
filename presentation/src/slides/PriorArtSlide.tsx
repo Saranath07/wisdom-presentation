@@ -118,7 +118,7 @@ export function PriorArtSlide() {
         </motion.div>
       )}
 
-      {/* Battle arena — big and readable */}
+      {/* Battle arena - big and readable */}
       {step >= 3 && (
         <motion.div
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}

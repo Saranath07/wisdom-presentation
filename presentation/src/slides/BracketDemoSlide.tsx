@@ -295,7 +295,7 @@ export function BracketDemoSlide() {
                 <span style={{ fontSize: 22 }}>⚠️</span>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--red)' }}>
-                    Reply 1988 is rank #{replyRank} — NOT in top-{M}!
+                    Reply 1988 is rank #{replyRank}: NOT in top-{M}!
                   </div>
                   <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
                     The true best show was knocked out early by noise. Phase 2 will rescue it.

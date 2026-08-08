@@ -17,13 +17,13 @@ function topM(e: number[], m: number) {
 }
 
 // ── pre-computed Phase 1 ───────────────────────────────────────────────────────
-// BB(4) loses to Chernobyl(5) in round 1 — noisy upset
+// BB(4) loses to Chernobyl(5) in round 1 - noisy upset
 // BB ends rank 5 (outside top-4, just inside top-5)
 interface Match { a: number; b: number; winner: number; phase: 1 | 2; lambda?: number }
 const P1_FIXED: [number, number, number][] = [
-  [0, 1, 0], [2, 3, 2], [4, 5, 5], [6, 7, 7], [8, 9, 8], // round 1 — BB=4 loses!
+  [0, 1, 0], [2, 3, 2], [4, 5, 5], [6, 7, 7], [8, 9, 8], // round 1 - BB=4 loses!
   [0, 2, 0], [5, 7, 5], [4, 3, 4],                         // round 2 consolation: BB beats Office
-  [0, 5, 5],                                                 // final — Chernobyl wins
+  [0, 5, 5],                                                 // final - Chernobyl wins
 ];
 let _e = new Array(N).fill(1200);
 const P1_MATCHES: Match[] = P1_FIXED.map(([a, b, w]) => {
@@ -44,7 +44,7 @@ const P1_SNAPSHOTS: number[][] = [new Array(N).fill(1200)];
   }
 }
 
-// ── pre-computed Phase 2 (seed 6 — BB wins from rank 5) ──────────────────────
+// ── pre-computed Phase 2 (seed 6 - BB wins from rank 5) ──────────────────────
 function mkRng(seed: number) {
   let s = ((seed ^ 0x12345678) >>> 0) || 1;
   return () => { s ^= s << 13; s = s >>> 0; s ^= s >> 17; s = s >>> 0; s ^= s << 5; s = s >>> 0; return s / 4294967296; };
@@ -193,7 +193,7 @@ function Phase1Panel() {
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, minHeight: 0, overflow: 'hidden' }}>
       <div style={{ fontSize: 13, color: 'var(--cyan)', fontWeight: 700, letterSpacing: '0.1em', flexShrink: 0 }}>
-        PHASE 1 — BRACKET TOURNAMENT
+        PHASE 1: BRACKET TOURNAMENT
       </div>
 
       <AnimatePresence mode="wait">
@@ -272,7 +272,7 @@ function Phase2Panel() {
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8, minHeight: 0, overflow: 'hidden' }}>
       <div style={{ fontSize: 13, color: 'var(--gold)', fontWeight: 700, letterSpacing: '0.1em', flexShrink: 0 }}>
-        PHASE 2 — WINNER-FOCUSED DESIGN
+        PHASE 2: WINNER-FOCUSED DESIGN
       </div>
 
       {/* Candidate strip */}
@@ -478,7 +478,7 @@ export function WiSDoMAlgorithmSlide() {
               transition: 'background 0.4s',
             }}>
               <span style={{ fontSize: 14, fontStyle: 'italic', color: p1Active ? p1Color : 'var(--text-secondary)', transition: 'color 0.4s', fontFamily: "'Space Grotesk', sans-serif" }}>
-                {ML('\\textit{Phase 1}\\text{ — robust best-of-}t\\text{ bracket}\\quad(t(N-1)\\text{ queries})')}
+                {ML('\\textit{Phase 1}\\text{: robust best-of-}t\\text{ bracket}\\quad(t(N-1)\\text{ queries})')}
               </span>
             </div>
             <div style={{ padding: '4px 6px 10px', display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -500,7 +500,7 @@ export function WiSDoMAlgorithmSlide() {
             </div>
           </motion.div>
 
-          {/* Phase 2 block — exits right when step=1 */}
+          {/* Phase 2 block - exits right when step=1 */}
           <AnimatePresence>
             {step !== 1 && (
               <motion.div key="p2block" layout
@@ -519,7 +519,7 @@ export function WiSDoMAlgorithmSlide() {
                   transition: 'background 0.4s',
                 }}>
                   <span style={{ fontSize: 14, fontStyle: 'italic', color: p2Active ? p2Color : 'var(--text-secondary)', transition: 'color 0.4s', fontFamily: "'Space Grotesk', sans-serif" }}>
-                    {ML('\\textit{Phase 2}\\text{ — winner-focused design loop}')}
+                    {ML('\\textit{Phase 2}\\text{: winner-focused design loop}')}
                   </span>
                 </div>
                 <div style={{ padding: '4px 6px 10px', display: 'flex', flexDirection: 'column', gap: 0 }}>

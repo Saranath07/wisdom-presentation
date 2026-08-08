@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MathFormula } from '../components/MathFormula';
 const ML = (f: string) => <MathFormula formula={f} style={{ display: 'inline', fontSize: '1em' }} />;
 
-// ── Teams — FIFA rankings as of July 2026 (Spain won 2026 World Cup) ──────────
+// ── Teams - FIFA rankings as of July 2026 (Spain won 2026 World Cup) ──────────
 const ARG = { name: 'Argentina', w: 1970, color: '#74ACDF', rank: '#2' };
 const ESP = { name: 'Spain',     w: 1996, color: '#C60B1E', rank: '#1' };
 const TOTAL = ARG.w + ESP.w; // 3966
@@ -76,7 +76,7 @@ export function OracleSlide() {
   const countDoneRef = useRef(false);
   const advance = useCallback(() => setStep(s => Math.min(s + 1, 4)), []);
 
-  // Left/right arrow navigation — fully manual, no auto-advance
+  // Left/right arrow navigation - fully manual, no auto-advance
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
@@ -331,7 +331,7 @@ export function OracleSlide() {
                 <div style={{ fontSize: 13, color: 'var(--text-secondary)', letterSpacing: '0.1em', marginBottom: 6 }}>
                   ARGENTINA WINS WITH
                 </div>
-                {/* P_ARG is now 49.7% — Argentina is slight underdog */}
+                {/* P_ARG is now 49.7% - Argentina is slight underdog */}
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 200, damping: 16, delay: 0.2 }}
                   style={{ fontSize: 56, fontWeight: 900, color: ARG.color, fontFamily: "'Space Grotesk', sans-serif", lineHeight: 1 }}>
@@ -344,7 +344,7 @@ export function OracleSlide() {
               {/* Insight */}
               <div style={{ flex: 1, fontSize: 18, color: 'var(--text-secondary)', lineHeight: 1.65 }}>
                 Each match = <strong style={{ color: 'var(--text-primary)' }}>one noisy draw</strong> from the bowl.
-                Argentina wins more often — but not always.
+                Argentina wins more often, but not always.
               </div>
             </motion.div>
           )}

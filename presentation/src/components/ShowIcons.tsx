@@ -1,4 +1,4 @@
-// 3D-style SVG icons for each show — no external dependencies
+// 3D-style SVG icons for each show - no external dependencies
 interface IconProps { size?: number }
 
 export function ReplyPhoneIcon({ size = 48 }: IconProps) {
@@ -92,9 +92,9 @@ export function DeathNoteIcon({ size = 48 }: IconProps) {
       </defs>
       <ellipse cx="26" cy="44" rx="13" ry="2.5" fill="rgba(0,0,0,0.4)" />
       <g filter="url(#dn-drop)">
-        {/* Book spine — narrower left strip for 3D depth illusion */}
+        {/* Book spine - narrower left strip for 3D depth illusion */}
         <rect x="7" y="8" width="5" height="34" rx="2" fill="url(#dn-spine)" />
-        {/* Book cover — slightly skewed via polygon for 3D feel */}
+        {/* Book cover - slightly skewed via polygon for 3D feel */}
         <polygon points="11,8 38,10 38,42 11,42" fill="url(#dn-cover)" />
         {/* Cover highlight strip */}
         <rect x="12" y="9" width="3" height="32" rx="1" fill="var(--glass-04)" />

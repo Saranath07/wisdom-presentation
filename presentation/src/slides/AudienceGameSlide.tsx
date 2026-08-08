@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// ── 10 shows — good spread of genres, true winner = Breaking Bad ─────────────
+// ── 10 shows - good spread of genres, true winner = Breaking Bad ─────────────
 export const SHOWS = [
   { id: 0, name: 'Reply 1988',      image: import.meta.env.BASE_URL + 'shows/reply1988.jpg',          rating: 9.2, genre: 'K-Drama',  color: '#e8c547' },
   { id: 1, name: 'Attack on Titan', image: import.meta.env.BASE_URL + 'shows/aot.jpg',                rating: 9.0, genre: 'Anime',    color: '#ef5350' },
@@ -21,7 +21,7 @@ const M = 4;           // top-4 advance to Phase 2
 const PHASE2_BUDGET = 20;
 
 // Phase 1: automated bracket simulation (audience watches the animation)
-// Phase 2: 1 voter per query (single oracle query, budget-optimal) — audience plays
+// Phase 2: 1 voter per query (single oracle query, budget-optimal) - audience plays
 const VOTERS = [
   { name: 'Alice',   color: '#e8c547' },
   { name: 'Bob',     color: '#4fc3f7' },
@@ -41,7 +41,7 @@ function _simulatePhase1(): { elos: number[]; matches: MatchRecord[] } {
     [2, 3, 2],  // Death Note beats The Office
     [4, 5, 5],  // Chernobyl UPSETS Breaking Bad (noisy oracle!)
     [6, 7, 7],  // Steins;Gate beats Squid Game
-    [8, 9, 8],  // Riverdale beats Fuller House (bye match — one advances)
+    [8, 9, 8],  // Riverdale beats Fuller House (bye match - one advances)
   ];
 
   for (const [a, b, winner] of r1) {
@@ -54,7 +54,7 @@ function _simulatePhase1(): { elos: number[]; matches: MatchRecord[] } {
   const r2: [number, number, number][] = [
     [0, 2, 0],  // Reply 1988 beats Death Note
     [5, 7, 5],  // Chernobyl beats Steins;Gate
-    [4, 8, 4],  // BB beats Riverdale (consolation) — shows up #5 in elo
+    [4, 8, 4],  // BB beats Riverdale (consolation) - shows up #5 in elo
   ];
   for (const [a, b, winner] of r2) {
     elos = eloUpdate(elos, a, b, winner === a);
@@ -189,7 +189,7 @@ function VoteButton({ show, side, onVote }: {
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
       }}
     >
-      {/* 3D poster — grows to fill card */}
+      {/* 3D poster - grows to fill card */}
       <div style={{
         flex: 1, width: '100%', maxWidth: 260, borderRadius: 12, overflow: 'hidden',
         transform: side === 'left'
@@ -339,7 +339,7 @@ export function AudienceGameSlide() {
     SHOWS.forEach(s => { const img = new Image(); img.src = s.image; });
   }, []);
 
-  // ── Start Phase 1 — always manual ────────────────────────────────────────────
+  // ── Start Phase 1 - always manual ────────────────────────────────────────────
   const startPhase1 = useCallback(() => {
     setP1Mode('manual');
     const ids = Array.from({ length: N }, (_, i) => i);
@@ -364,7 +364,7 @@ export function AudienceGameSlide() {
     const newMatches: MatchRecord[] = [];
     const snapshots: number[][] = [curElos];
 
-    // Helper: run a match with fixed outcomes — BB loses once if still in
+    // Helper: run a match with fixed outcomes - BB loses once if still in
     const runMatch = (a: number, b: number): number => {
       // BB loses if facing a strong opponent (simulate noisy upset)
       const bbInMatch = a === TRUE_WINNER || b === TRUE_WINNER;
@@ -637,7 +637,7 @@ export function AudienceGameSlide() {
             <strong style={{ color: 'var(--gold)' }}>Phase 2:</strong> WiSDoM picks 1 optimal pair at a time.
           </p>
 
-          {/* 10-show poster grid — 5 per row, fills full width */}
+          {/* 10-show poster grid - 5 per row, fills full width */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
@@ -711,7 +711,7 @@ export function AudienceGameSlide() {
                 fontSize: 12,
               }}>
                 {p1Mode === 'manual'
-                  ? <span style={{ color: 'var(--text-secondary)' }}>🎮 <strong style={{ color: 'var(--text-primary)' }}>Manual mode</strong> — vote on each match · {matches.filter(m => m.phase === 1).length} done</span>
+                  ? <span style={{ color: 'var(--text-secondary)' }}>🎮 <strong style={{ color: 'var(--text-primary)' }}>Manual mode</strong>: vote on each match · {matches.filter(m => m.phase === 1).length} done</span>
                   : <span style={{ color: 'var(--cyan)' }}>⚡ <strong>Auto-completing</strong> remaining bracket…</span>
                 }
               </div>
@@ -845,7 +845,7 @@ export function AudienceGameSlide() {
               }}>
                 {p2Running
                   ? <span style={{ color: 'var(--gold)' }}>⚡ <strong>Auto-completing</strong> Phase 2…</span>
-                  : <span style={{ color: 'var(--text-secondary)' }}>🎮 <strong style={{ color: 'var(--text-primary)' }}>Manual mode</strong> — WiSDoM picks optimal pairs · {phase2Queries} done</span>
+                  : <span style={{ color: 'var(--text-secondary)' }}>🎮 <strong style={{ color: 'var(--text-primary)' }}>Manual mode</strong>: WiSDoM picks optimal pairs · {phase2Queries} done</span>
                 }
               </div>
               {!p2Running && (
@@ -963,7 +963,7 @@ export function AudienceGameSlide() {
               <p style={{ fontSize: 16, color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 18 }}>
                 Top-{M} candidates advance to Phase 2. WiSDoM will now pick{' '}
                 <strong style={{ color: 'var(--text-primary)' }}>optimal pairs</strong> to
-                maximise certainty — targeting the closest matchups.
+                maximise certainty, targeting the closest matchups.
               </p>
 
               {/* Top-3 poster cards */}
@@ -1128,7 +1128,7 @@ export function AudienceGameSlide() {
                     <span style={{ fontSize: 10, color: diff > 0 ? '#66bb6a' : '#ef5350', flexShrink: 0 }}>
                       {diff > 0 ? `↑${diff}` : `↓${Math.abs(diff)}`}
                     </span>
-                  ) : <span style={{ fontSize: 10, color: 'var(--text-secondary)', flexShrink: 0 }}>—</span>;
+                  ) : <span style={{ fontSize: 10, color: 'var(--text-secondary)', flexShrink: 0 }}>-</span>;
                 })()}
                 <span style={{ fontSize: 11, color: 'var(--text-secondary)', flexShrink: 0 }}>{Math.round(elos[id])}</span>
               </motion.div>
@@ -1144,7 +1144,7 @@ export function AudienceGameSlide() {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           style={{ flex: 1, display: 'flex', gap: 18, minHeight: 0 }}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, minHeight: 0, overflowY: 'auto' }}>
-            <div className="label">The Algorithm's Journey — {matches.length} queries</div>
+            <div className="label">The Algorithm's Journey: {matches.length} queries</div>
             {matches.slice(0, replayStep + 1).map((m, i) => (
               <motion.div key={i}
                 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}

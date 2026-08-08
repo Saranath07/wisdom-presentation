@@ -212,7 +212,7 @@ export function Phase1Slide() {
                 textTransform: 'uppercase',
                 marginBottom: 4,
               }}>
-                Phase 1 Complete — Top M = {topM.length} candidates selected
+                Phase 1 Complete: Top M = {topM.length} candidates selected
               </div>
               <div style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
                 Advancing to{' '}

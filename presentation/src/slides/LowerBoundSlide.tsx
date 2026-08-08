@@ -170,7 +170,7 @@ export function LowerBoundSlide() {
               }}
             >
               <span style={{ color: 'var(--green)', fontWeight: 600 }}>WiSDoM matches the bound.</span>
-              {' '}Empirical failure probability closely tracks the theoretical floor — no other method is significantly better with the same budget.
+              {' '}Empirical failure probability closely tracks the theoretical floor: no other method is significantly better with the same budget.
             </motion.div>
           )}
         </div>

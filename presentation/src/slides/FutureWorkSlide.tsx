@@ -5,7 +5,7 @@ const QUESTIONS = [
   { color: '#4fc3f7', number: '02', bold: 'Matching upper bound' },
   { color: '#ce93d8', number: '03', bold: 'Self-contained end-to-end guarantee' },
   { color: '#80cbc4', number: '04', bold: 'Optimal bracket depth t*(N, Δ)' },
-  { color: '#ffb74d', number: '05', bold: 'Hundreds of LLMs — robustness' },
+  { color: '#ffb74d', number: '05', bold: 'Hundreds of LLMs: robustness' },
   { color: '#ef9a9a', number: '06', bold: 'Beyond flat single-gap BTL' },
 ];
 

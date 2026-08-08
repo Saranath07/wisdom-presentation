@@ -102,7 +102,7 @@ function Shell({ label, title, children }: { label: string; title: React.ReactNo
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 1 — big question centred → slides left, players fly in right
+// SLIDE 1 - big question centred → slides left, players fly in right
 // ══════════════════════════════════════════════════════════════════════════════
 export function MostInformativePair1() {
   const [phase, setPhase] = useState<'q' | 'players'>('q');
@@ -161,7 +161,7 @@ export function MostInformativePair1() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 1b — Full Fisher matrix: A vs C beats A vs B
+// SLIDE 1b - Full Fisher matrix: A vs C beats A vs B
 // Players: A=0, B=1, C=2  (scores 2000, 1950, 1900)
 // Prior: 20 games A-B + 20 games B-C already played.
 // Scalar f_AB≈f_AC (identical). But Fisher matrix says play A-C next.
@@ -288,7 +288,7 @@ export function MostInformativePair1b() {
         <div className="label" style={{ marginBottom: 10 }}>MOST INFORMATIVE PAIR</div>
         <h1 style={{ fontSize: 42, fontFamily: "'Space Grotesk', sans-serif", margin: 0 }}>
           {step < 2
-            ? <>Scalar {ML('f_{ij}')} says <span style={{ color: 'var(--cyan)' }}>A{'}'}B ≈ A{'}'}C</span> — can't decide!</>
+            ? <>Scalar {ML('f_{ij}')} says <span style={{ color: 'var(--cyan)' }}>A{'}'}B ≈ A{'}'}C</span>: can't decide!</>
             : <>Fisher matrix: <span style={{ color: 'var(--gold)' }}>play A vs C</span></>
           }
         </h1>
@@ -317,8 +317,8 @@ export function MostInformativePair1b() {
       </div>
 
       <div style={{ fontSize: 16, color: 'var(--glass-55)' }}>
-        A–C gap is <strong style={{ color: '#ef9a9a' }}>2× more uncertain</strong> — it's the bottleneck.
-        {' '}Scalar: {ML('f_{AB}')} = {OPTIONS_1B[0].scalarF.toFixed(4)}, {ML('f_{AC}')} = {OPTIONS_1B[1].scalarF.toFixed(4)} — <em>almost identical</em>. Scalar alone can't decide.
+        A–C gap is <strong style={{ color: '#ef9a9a' }}>2× more uncertain</strong>: it's the bottleneck.
+        {' '}Scalar: {ML('f_{AB}')} = {OPTIONS_1B[0].scalarF.toFixed(4)}, {ML('f_{AC}')} = {OPTIONS_1B[1].scalarF.toFixed(4)}: <em>almost identical</em>. Scalar alone can't decide.
       </div>
 
       {/* Options table */}
@@ -366,7 +366,7 @@ export function MostInformativePair1b() {
         >
           <div style={{ fontSize: 18, lineHeight: 1.75 }}>
             <strong style={{ color: 'var(--gold)' }}>A vs C</strong> gives the lowest {ML('\\max\\,\\text{unc}')} ({BEST_OPT_1B.maxUnc.toFixed(4)}) vs A-B ({OPTIONS_1B[0].maxUnc.toFixed(4)}).
-            {' '}{ML('f_{AB} \\approx f_{AC}')} — scalar info <em>cannot distinguish them</em>.
+            {' '}{ML('f_{AB} \\approx f_{AC}')}: scalar info <em>cannot distinguish them</em>.
             Only the <strong style={{ color: 'var(--text-primary)' }}>Fisher matrix inverse</strong> {ML('I(\\theta;\\lambda)^{-1}')} sees that A-C is the bottleneck. →
           </div>
         </motion.div>
@@ -380,7 +380,7 @@ export function MostInformativePair1b() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 2 — 3 players, gap labels
+// SLIDE 2 - 3 players, gap labels
 // ══════════════════════════════════════════════════════════════════════════════
 export function MostInformativePair2() {
   return (
@@ -420,7 +420,7 @@ export function MostInformativePair2() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 2b — Why Fisher *matrix*? The transitivity / network effect
+// SLIDE 2b - Why Fisher *matrix*? The transitivity / network effect
 // ══════════════════════════════════════════════════════════════════════════════
 export function MostInformativePair2b() {
   const [step, setStep] = useState(0); // 0 = naive, 1 = transitivity, 2 = Fisher formula
@@ -443,25 +443,25 @@ export function MostInformativePair2b() {
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14, minHeight: 0 }}>
 
-          {/* Box 1 — always visible */}
+          {/* Box 1 - always visible */}
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
             style={{ padding: '16px 22px', borderRadius: 14, background: 'var(--glass-03)', border: '1px solid var(--glass-10)', fontSize: 20, lineHeight: 1.75 }}
           >
             <strong style={{ color: 'var(--text-primary)' }}>Naive view:</strong> just pick the pair with the smallest gap{' '}
-            <MathFormula formula="\Delta_{ij}" style={{ display: 'inline' }} /> — they're the hardest to separate.
+            <MathFormula formula="\Delta_{ij}" style={{ display: 'inline' }} />: they're the hardest to separate.
             <br />
             <strong style={{ color: 'var(--gold)' }}>But this ignores how BTL is a global ranking model.</strong>{' '}
             Information flows through the network via transitivity.
           </motion.div>
 
-          {/* Box 2 — revealed on step 1 */}
+          {/* Box 2 - revealed on step 1 */}
           {step >= 1 && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 120, damping: 22 }}
               style={{ padding: '18px 22px', borderRadius: 14, background: 'rgba(232,197,71,0.05)', border: '1px solid rgba(232,197,71,0.25)' }}
             >
-              <div style={{ fontSize: 14, color: "var(--text-secondary)", marginBottom: 12, letterSpacing: "0.1em" }}>THE NETWORK EFFECT — TRANSITIVITY</div>
+              <div style={{ fontSize: 14, color: "var(--text-secondary)", marginBottom: 12, letterSpacing: "0.1em" }}>THE NETWORK EFFECT: TRANSITIVITY</div>
               <div style={{ fontSize: 20, lineHeight: 1.75, color: 'var(--text-secondary)' }}>
                 Suppose A and B never play each other directly. But you run many queries of{' '}
                 <strong style={{ color: PB.color }}>A vs C</strong> and{' '}
@@ -490,20 +490,20 @@ export function MostInformativePair2b() {
             </motion.div>
           )}
 
-          {/* Box 3 — revealed on step 2 */}
+          {/* Box 3 - revealed on step 2 */}
           {step >= 2 && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 120, damping: 22 }}
               style={{ padding: '16px 22px', borderRadius: 14, background: 'rgba(79,195,247,0.06)', border: '1px solid rgba(79,195,247,0.3)' }}
             >
-              <div style={{ fontSize: 14, color: 'var(--cyan)', marginBottom: 10, letterSpacing: '0.1em', fontWeight: 700 }}>THE FISHER MATRIX — NETWORK-AWARE UNCERTAINTY</div>
+              <div style={{ fontSize: 14, color: 'var(--cyan)', marginBottom: 10, letterSpacing: '0.1em', fontWeight: 700 }}>THE FISHER MATRIX: NETWORK-AWARE UNCERTAINTY</div>
               <MathFormula
                 formula={String.raw`I(\theta;\lambda) = B\!\sum_{i<j}\lambda_{ij}\,p_{ij}(1-p_{ij})(e_i-e_j)(e_i-e_j)^\top`}
                 block style={{ fontSize: '1.9em' }}
               />
               <div style={{ fontSize: 19, color: 'var(--text-secondary)', marginTop: 10, lineHeight: 1.65 }}>
                 Each query on pair <MathFormula formula="(i,j)" style={{ display: 'inline' }} /> adds a rank-1 update along direction{' '}
-                <MathFormula formula="e_i - e_j" style={{ display: 'inline' }} />, modifying the uncertainty of <em>every</em> gap — not just <MathFormula formula="\Delta_{ij}" style={{ display: 'inline' }} />.
+                <MathFormula formula="e_i - e_j" style={{ display: 'inline' }} />, modifying the uncertainty of <em>every</em> gap, not just <MathFormula formula="\Delta_{ij}" style={{ display: 'inline' }} />.
               </div>
             </motion.div>
           )}
@@ -520,7 +520,7 @@ export function MostInformativePair2b() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 2c — Why Δ² too? Width vs Location — exact numbers from our players
+// SLIDE 2c - Why Δ² too? Width vs Location - exact numbers from our players
 //
 // A=2000, B=1950, D=1400 (using D as the "weakling" contrast)
 // BTL log-scores: θ = log(score)
@@ -542,10 +542,10 @@ export function MostInformativePair2b() {
 // φ_AB is 192× larger → A vs B is vastly more dangerous despite same σ²
 // ══════════════════════════════════════════════════════════════════════════════
 
-// Player D for this slide — score 1300 so Δ_AD is large enough that CI doesn't straddle 0
+// Player D for this slide - score 1300 so Δ_AD is large enough that CI doesn't straddle 0
 const PD = { name: 'D', score: 1300, color: '#a5d6a7', label: 'Weakling' };
 
-// Exact computed values — n=100 queries each so σ is small enough
+// Exact computed values - n=100 queries each so σ is small enough
 // A=2000, B=1950, D=1300
 // Δ_AB = ln(2000/1950) = 0.02532   p_AB = 2000/3950 = 0.5063  f_AB = 0.2500  σ²_AB = 1/(100×0.250)=0.04000  σ_AB=0.2000
 // CI_AB = [0.02532 ± 1.96×0.200] = [−0.367, +0.417]  → straddles 0 ⚠
@@ -607,9 +607,9 @@ export function MostInformativePair2c() {
   ];
 
   const titles = [
-    <>Width ≠ danger — <span style={{ color: 'var(--gold)' }}>same <MathFormula formula="\sigma^2" style={{ display: 'inline', fontSize: '0.85em', color: 'var(--gold)' }} />, different threat</span></>,
-    <>The CI tells the real story — <span style={{ color: 'var(--gold)' }}>does it straddle zero?</span></>,
-    <><MathFormula formula="\phi = \sigma^2/\Delta^2" style={{ display: 'inline', fontSize: '0.85em' }} /> — <span style={{ color: 'var(--gold)' }}>192× difference</span></>,
+    <>Width ≠ danger: <span style={{ color: 'var(--gold)' }}>same <MathFormula formula="\sigma^2" style={{ display: 'inline', fontSize: '0.85em', color: 'var(--gold)' }} />, different threat</span></>,
+    <>The CI tells the real story: <span style={{ color: 'var(--gold)' }}>does it straddle zero?</span></>,
+    <><MathFormula formula="\phi = \sigma^2/\Delta^2" style={{ display: 'inline', fontSize: '0.85em' }} />: <span style={{ color: 'var(--gold)' }}>192× difference</span></>,
   ];
 
   return (
@@ -672,12 +672,12 @@ export function MostInformativePair2c() {
                 ))}
               </div>
               <div style={{ padding: '16px 22px', borderRadius: 12, background: 'rgba(239,83,80,0.08)', border: '1px solid rgba(239,83,80,0.35)', fontSize: 18, color: '#ef9a9a', lineHeight: 1.65 }}>
-                <strong>G-optimal flaw:</strong> Both <MathFormula formula="\sigma^2" style={{ display:'inline' }} /> are nearly identical (0.0826 vs 0.0800). G-optimal picks A vs D by a hair — but is that actually the dangerous pair?
+                <strong>G-optimal flaw:</strong> Both <MathFormula formula="\sigma^2" style={{ display:'inline' }} /> are nearly identical (0.0826 vs 0.0800). G-optimal picks A vs D by a hair, but is that actually the dangerous pair?
               </div>
             </motion.div>
           )}
 
-          {/* ── Step 1: CI number-line — one row per arm ── */}
+          {/* ── Step 1: CI number-line - one row per arm ── */}
           {step === 1 && (()=>{
             const dMin = -0.55, dMax = 1.0, lW = 660;
             const tx = (v: number) => ((v - dMin) / (dMax - dMin)) * lW;
@@ -763,8 +763,8 @@ export function MostInformativePair2c() {
               style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
             >
               <div style={{ padding: '12px 20px', borderRadius: 12, background: 'rgba(232,197,71,0.08)', border: '1.5px solid rgba(232,197,71,0.35)', fontSize: 17, color: 'var(--text-secondary)', lineHeight: 1.65 }}>
-                A vs D: CI/Δ = {(CI_HALF * sig_AD / Delta_AD).toFixed(1)}× — CI clears zero, winner confirmed. &nbsp;
-                <strong style={{ color: PB.color }}>A vs B: CI/Δ = {(CI_HALF * sig_AB / Delta_AB).toFixed(1)}× — CI swallows the gap entirely.</strong>
+                A vs D: CI/Δ = {(CI_HALF * sig_AD / Delta_AD).toFixed(1)}×, CI clears zero, winner confirmed. &nbsp;
+                <strong style={{ color: PB.color }}>A vs B: CI/Δ = {(CI_HALF * sig_AB / Delta_AB).toFixed(1)}×, CI swallows the gap entirely.</strong>
                 &nbsp; Same <MathFormula formula="\sigma^2" style={{ display:'inline' }} />, completely different danger.
               </div>
               <div style={{ fontSize: 19, color: 'var(--text-secondary)', lineHeight: 1.65 }}>
@@ -785,12 +785,12 @@ export function MostInformativePair2c() {
                     />
                     {a.gPicks && (
                       <div style={{ marginTop: 14, fontSize: 17, color: '#ef9a9a' }}>
-                        G-optimal picked this — but <MathFormula formula={`\\varphi = ${a.phi.toFixed(1)}`} style={{ display:'inline' }} /> is tiny.
+                        G-optimal picked this, but <MathFormula formula={`\\varphi = ${a.phi.toFixed(1)}`} style={{ display:'inline' }} /> is tiny.
                       </div>
                     )}
                     {!a.gPicks && (
                       <div style={{ marginTop: 14, fontSize: 19, color: a.color, fontWeight: 800 }}>
-                        ▲ <MathFormula formula={`\\varphi = ${a.phi.toFixed(0)}`} style={{ display:'inline' }} /> — {(phi_AB / phi_AD).toFixed(0)}× more dangerous!
+                        ▲ <MathFormula formula={`\\varphi = ${a.phi.toFixed(0)}`} style={{ display:'inline' }} />: {(phi_AB / phi_AD).toFixed(0)}× more dangerous!
                       </div>
                     )}
                   </div>
@@ -799,7 +799,7 @@ export function MostInformativePair2c() {
               <div style={{ padding: '18px 24px', borderRadius: 14, background: 'rgba(232,197,71,0.1)', border: '2px solid rgba(232,197,71,0.45)', fontSize: 19, lineHeight: 1.65 }}>
                 <strong style={{ color: 'var(--gold)' }}>G-optimal is wrong by 192×.</strong>
                 <span style={{ color: 'var(--text-secondary)', marginLeft: 8 }}>
-                  It chose A vs D because <MathFormula formula="\sigma^2" style={{ display:'inline' }} /> was 0.0003 larger. But <MathFormula formula="\varphi" style={{ display:'inline' }} /> shows A vs B is the real threat — its tiny gap makes every bit of uncertainty catastrophic.
+                  It chose A vs D because <MathFormula formula="\sigma^2" style={{ display:'inline' }} /> was 0.0003 larger. But <MathFormula formula="\varphi" style={{ display:'inline' }} /> shows A vs B is the real threat: its tiny gap makes every bit of uncertainty catastrophic.
                 </span>
               </div>
             </motion.div>
@@ -812,12 +812,12 @@ export function MostInformativePair2c() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 3 — (now slide 5) Cramér-Rao → misclassification → closing question
+// SLIDE 3 - (now slide 5) Cramér-Rao → misclassification → closing question
 // ══════════════════════════════════════════════════════════════════════════════
 export function MostInformativePair3() {
   return (
     <Shell label="MOST INFORMATIVE PAIR"
-      title={<>Raw Fisher info <MathFormula formula="f = p(1-p)" style={{ display: 'inline', fontSize: '0.85em' }} /> — <span style={{ color: 'var(--gold)' }}>it's a perfect tie.</span></>}
+      title={<>Raw Fisher info <MathFormula formula="f = p(1-p)" style={{ display: 'inline', fontSize: '0.85em' }} />: <span style={{ color: 'var(--gold)' }}>it's a perfect tie.</span></>}
     >
       <div style={{ flex: 1, display: 'flex', gap: 22, alignItems: 'stretch', minHeight: 0 }}>
         <PlayerSidePanel />
@@ -830,7 +830,7 @@ export function MostInformativePair3() {
             style={{ padding: '14px 20px', borderRadius: 14, background: 'rgba(232,197,71,0.05)', border: '1px solid rgba(232,197,71,0.2)' }}
           >
             <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 8, letterSpacing: '0.1em' }}>
-              STEP 1 — RAW FISHER INFORMATION
+              STEP 1: RAW FISHER INFORMATION
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
               <MathFormula formula={String.raw`f_{Aj} = p_{Aj}(1-p_{Aj})`} block style={{ fontSize: '2.1em' }} />
@@ -858,7 +858,7 @@ export function MostInformativePair3() {
             style={{ padding: '14px 20px', borderRadius: 14, background: 'var(--glass-03)', border: '1px solid var(--glass-10)' }}
           >
             <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 8, letterSpacing: '0.1em' }}>
-              STEP 2 — CRAMÉR-RAO: MOVE TO ERROR DOMAIN
+              STEP 2: CRAMÉR-RAO, MOVE TO ERROR DOMAIN
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
               <MathFormula
@@ -867,7 +867,7 @@ export function MostInformativePair3() {
               />
               <div style={{ fontSize: 19, color: 'var(--text-secondary)', lineHeight: 1.65, flex: 1 }}>
                 The Cramér-Rao bound says variance is <em>inversely proportional</em> to Fisher information.
-                Taking <MathFormula formula="f^{-1}" style={{ display: 'inline' }} /> converts us from the <em>information domain</em> into the <em>error domain</em> — where we can measure actual danger of misclassification.
+                Taking <MathFormula formula="f^{-1}" style={{ display: 'inline' }} /> converts us from the <em>information domain</em> into the <em>error domain</em>, where we can measure actual danger of misclassification.
               </div>
             </div>
           </motion.div>
@@ -878,11 +878,11 @@ export function MostInformativePair3() {
             style={{ padding: '22px 28px', borderRadius: 16, background: 'rgba(232,197,71,0.07)', border: '2px solid rgba(232,197,71,0.4)', textAlign: 'center' }}
           >
             <div style={{ fontSize: 24, fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.7, marginBottom: 10 }}>
-              Both pairs give <MathFormula formula="f \approx 0.250" style={{ display: 'inline' }} /> — and
+              Both pairs give <MathFormula formula="f \approx 0.250" style={{ display: 'inline' }} />, and
               {' '}<MathFormula formula="\sigma^2 \propto 1/f" style={{ display: 'inline' }} /> is also identical.
             </div>
             <div style={{ fontSize: 26, fontWeight: 800, color: "var(--gold)" }}>
-              So which pair should we choose — and why?
+              So which pair should we choose, and why?
             </div>
           </motion.div>
 
@@ -893,12 +893,12 @@ export function MostInformativePair3() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 3b — Δ² derivation: from σ/Δ to φ = 1/(f·Δ²)
+// SLIDE 3b - Δ² derivation: from σ/Δ to φ = 1/(f·Δ²)
 // ══════════════════════════════════════════════════════════════════════════════
 export function MostInformativePair3b() {
   return (
     <Shell label="MOST INFORMATIVE PAIR"
-      title={<>The fix: measure <MathFormula formula="\sigma" style={{ display: 'inline', fontSize: '0.9em' }} /> <em>relative to</em> <MathFormula formula="\Delta" style={{ display: 'inline', fontSize: '0.9em' }} /> — enter <span style={{ color: 'var(--gold)' }}><MathFormula formula="\Delta^2" style={{ display: 'inline', fontSize: '0.9em', color: 'var(--gold)' }} /></span>.</>}
+      title={<>The fix: measure <MathFormula formula="\sigma" style={{ display: 'inline', fontSize: '0.9em' }} /> <em>relative to</em> <MathFormula formula="\Delta" style={{ display: 'inline', fontSize: '0.9em' }} />: enter <span style={{ color: 'var(--gold)' }}><MathFormula formula="\Delta^2" style={{ display: 'inline', fontSize: '0.9em', color: 'var(--gold)' }} /></span>.</>}
     >
       <div style={{ flex: 1, display: 'flex', gap: 24, alignItems: 'center', minHeight: 0 }}>
         <PlayerSidePanel />
@@ -910,7 +910,7 @@ export function MostInformativePair3b() {
             transition={{ delay: 0.1 }}
             style={{ padding: '18px 24px', borderRadius: 14, background: 'var(--glass-03)', border: '1px solid var(--glass-10)', fontSize: 17, lineHeight: 1.75 }}
           >
-            We established: <MathFormula formula="\sigma^2 \propto 1/f" style={{ display: 'inline' }} /> — same for both pairs.
+            We established: <MathFormula formula="\sigma^2 \propto 1/f" style={{ display: 'inline' }} />, same for both pairs.
             <br />
             The real question is: <strong style={{ color: 'var(--text-primary)' }}>how big is the error bar compared to the gap?</strong>
             <br />
@@ -922,7 +922,7 @@ export function MostInformativePair3b() {
             transition={{ delay: 0.25, type: 'spring', stiffness: 120, damping: 22 }}
             style={{ padding: '22px 28px', borderRadius: 16, background: 'rgba(232,197,71,0.05)', border: '1px solid rgba(232,197,71,0.25)' }}
           >
-            <div style={{ fontSize: 14, color: "var(--text-secondary)", marginBottom: 14, letterSpacing: "0.1em" }}>DERIVATION — RELATIVE MISCLASSIFICATION DANGER</div>
+            <div style={{ fontSize: 14, color: "var(--text-secondary)", marginBottom: 14, letterSpacing: "0.1em" }}>DERIVATION: RELATIVE MISCLASSIFICATION DANGER</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               {[
                 { label: 'Relative danger', formula: String.raw`\text{danger} = \frac{\sigma}{\Delta}`, note: 'how large is the error bar vs the gap?' },
@@ -968,7 +968,7 @@ export function MostInformativePair3b() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 5 — twist: n_ij past queries, formula WITHOUT Δ² yet
+// SLIDE 5 - twist: n_ij past queries, formula WITHOUT Δ² yet
 // n·f(A,B) = 20×0.25 = 5.0  →  φ_simple = 1/5.0 = 0.200
 // n·f(A,C) =  2×0.25 = 0.5  →  φ_simple = 1/0.5 = 2.000  (10× higher)
 // ══════════════════════════════════════════════════════════════════════════════
@@ -1003,7 +1003,7 @@ export function MostInformativePair4() {
                   />
                 </div>
                 <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
-                  {r.pct > 80 ? '⚠ Nearly saturated — diminishing returns' : '○ Mostly unexplored — high value'}
+                  {r.pct > 80 ? '⚠ Nearly saturated: diminishing returns' : '○ Mostly unexplored: high value'}
                 </div>
               </div>
             ))}
@@ -1038,7 +1038,7 @@ export function MostInformativePair4() {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
             style={{ padding: '14px 22px', borderRadius: 12, background: 'rgba(232,197,71,0.07)', border: '1.5px solid rgba(232,197,71,0.4)', textAlign: 'center' }}
           >
-            <span style={{ fontSize: 21, fontWeight: 700, color: 'var(--gold)' }}>A vs C wins — </span>
+            <span style={{ fontSize: 21, fontWeight: 700, color: 'var(--gold)' }}>A vs C wins: </span>
             <span style={{ fontSize: 16, color: 'var(--text-secondary)' }}>only 2 past matches vs 20. But we're still missing one thing: does the gap size matter?</span>
           </motion.div>
         </div>
@@ -1048,14 +1048,14 @@ export function MostInformativePair4() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 5 — now add Δ²: full φ formula, same winner but now explained properly
+// SLIDE 5 - now add Δ²: full φ formula, same winner but now explained properly
 // φ(A,B) = 1/(20×0.25×50²)  = 1/12500 = 0.000080
 // φ(A,C) = 1/(2×0.25×100²) = 1/5000  = 0.000200  (2.5× higher)
 // ══════════════════════════════════════════════════════════════════════════════
 export function MostInformativePair5() {
   return (
     <Shell label="MOST INFORMATIVE PAIR"
-      title={<>Add <MathFormula formula="\Delta_{ij}^2" style={{ display: 'inline', fontSize: '0.9em' }} /> — gap size also matters.</>}
+      title={<>Add <MathFormula formula="\Delta_{ij}^2" style={{ display: 'inline', fontSize: '0.9em' }} />: gap size also matters.</>}
     >
       <div style={{ flex: 1, display: 'flex', gap: 28, alignItems: 'center', minHeight: 0 }}>
         <PlayerSidePanel showN nB={20} nC={2} />
@@ -1096,7 +1096,7 @@ export function MostInformativePair5() {
                 <div style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{r.expr}</div>
                 <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 6 }}>{r.denval}</div>
                 <div style={{ fontSize: 28, fontWeight: 900, color: r.win ? r.color : 'var(--text-secondary)', fontFamily: "'Space Grotesk', sans-serif" }}>{r.val}</div>
-                {r.win && <div style={{ fontSize: 12, color: r.color, fontWeight: 700, marginTop: 6, letterSpacing: '0.06em' }}>▲ 2.5× HIGHER — PICK THIS</div>}
+                {r.win && <div style={{ fontSize: 12, color: r.color, fontWeight: 700, marginTop: 6, letterSpacing: '0.06em' }}>▲ 2.5× HIGHER: PICK THIS</div>}
               </motion.div>
             ))}
           </motion.div>
@@ -1104,7 +1104,7 @@ export function MostInformativePair5() {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.75 }}
             style={{ padding: '14px 22px', borderRadius: 12, background: `${PC.color}12`, border: `1.5px solid ${PC.color}55`, textAlign: 'center' }}
           >
-            <span style={{ fontSize: 21, fontWeight: 700, color: PC.color }}>A vs C still wins — </span>
+            <span style={{ fontSize: 21, fontWeight: 700, color: PC.color }}>A vs C still wins: </span>
             <span style={{ fontSize: 16, color: 'var(--text-secondary)' }}>the larger <MathFormula formula="\Delta^2{=}10000" style={{ display:'inline' }} /> in the denominator actually hurts C, but the tiny n=2 dominates. State-aware design.</span>
           </motion.div>
         </div>
@@ -1114,7 +1114,7 @@ export function MostInformativePair5() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 7 — λ objective: step=0 shows max only, step=1 shows min max
+// SLIDE 7 - λ objective: step=0 shows max only, step=1 shows min max
 // Arrow keys handled internally; passes through to App only when at boundary
 // ══════════════════════════════════════════════════════════════════════════════
 export function MostInformativePair6() {
@@ -1139,7 +1139,7 @@ export function MostInformativePair6() {
         <MathFormula formula="\mathcal{C}" style={{ display: 'inline' }} /> is the candidate set of top-<MathFormula formula="M" style={{ display: 'inline' }} /> items;{' '}
         <MathFormula formula="w" style={{ display: 'inline' }} /> is the current estimated winner.
         We cannot declare a winner until <em>every</em> challenger is confidently beaten.
-        The <MathFormula formula="\max" style={{ display: 'inline' }} /> finds the <strong style={{ color: 'var(--text-primary)' }}>most dangerous challenger</strong> — the bottleneck blocking us.
+        The <MathFormula formula="\max" style={{ display: 'inline' }} /> finds the <strong style={{ color: 'var(--text-primary)' }}>most dangerous challenger</strong>: the bottleneck blocking us.
       </>,
     },
     {
@@ -1147,7 +1147,7 @@ export function MostInformativePair6() {
       text: <>
         We control how to split budget <MathFormula formula="B" style={{ display: 'inline' }} /> via <MathFormula formula="\lambda" style={{ display: 'inline' }} />.
         The <MathFormula formula="\arg\min" style={{ display: 'inline' }} /> finds the allocation that{' '}
-        <strong style={{ color: 'var(--text-primary)' }}>minimises worst-case uncertainty</strong> —
+        <strong style={{ color: 'var(--text-primary)' }}>minimises worst-case uncertainty</strong>,
         pouring budget into the hardest gap until all challengers are equally certain.
         Solving this convex SDP gives the optimal query schedule.
       </>,
@@ -1169,18 +1169,18 @@ export function MostInformativePair6() {
         </h1>
       </div>
 
-      {/* Box 1: Budget intro — always shown */}
+      {/* Box 1: Budget intro - always shown */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         style={{ padding: '18px 28px', borderRadius: 16, background: 'rgba(79,195,247,0.06)', border: '1px solid rgba(79,195,247,0.3)', flexShrink: 0 }}
       >
         <div style={{ fontSize: 22, lineHeight: 1.7, fontWeight: 500 }}>
-          We know how to score a pair — but we have a <strong style={{ color: 'var(--cyan)' }}>budget <MathFormula formula="B" style={{ display: 'inline' }} /></strong>.
+          We know how to score a pair, but we have a <strong style={{ color: 'var(--cyan)' }}>budget <MathFormula formula="B" style={{ display: 'inline' }} /></strong>.
           We can split it across <em>all</em> pairs.
           Let <MathFormula formula="\lambda_{ij}" style={{ display: 'inline' }} /> = fraction of <MathFormula formula="B" style={{ display: 'inline' }} /> spent on pair <MathFormula formula="(i,j)" style={{ display: 'inline' }} />.
         </div>
       </motion.div>
 
-      {/* Box 2: Fisher formula — revealed on step 1 */}
+      {/* Box 2: Fisher formula - revealed on step 1 */}
       {step >= 1 && (
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
           style={{ padding: '18px 28px', borderRadius: 16, background: 'rgba(232,197,71,0.05)', border: '1px solid rgba(232,197,71,0.25)', flexShrink: 0 }}
@@ -1197,7 +1197,7 @@ export function MostInformativePair6() {
         </motion.div>
       )}
 
-      {/* Box 3: max objective — revealed on step 2 */}
+      {/* Box 3: max objective - revealed on step 2 */}
       {step >= 2 && (
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
           style={{
@@ -1244,8 +1244,8 @@ export function MostInformativePair6() {
 
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GOptimalitySlide — large-font step-by-step worked example
-// Each step shows only what's needed — big, readable, with slide-in transitions
+// GOptimalitySlide - large-font step-by-step worked example
+// Each step shows only what's needed - big, readable, with slide-in transitions
 // ─────────────────────────────────────────────────────────────────────────────
 export function GOptimalitySlide() {
   const [step, setStep] = useState(0);
@@ -1303,7 +1303,7 @@ export function GOptimalitySlide() {
         <motion.div key="s0" {...IN}
           style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 20, justifyContent: 'center' }}>
 
-          {/* 3 LLM cards — big */}
+          {/* 3 LLM cards - big */}
           <div style={{ display: 'flex', gap: 20 }}>
             {([
               { name: 'Fable 5', role: 'w  (winner?)', score: String.raw`\theta^*_w = 1.00`, color: GREEN },
@@ -1321,7 +1321,7 @@ export function GOptimalitySlide() {
             ))}
           </div>
 
-          {/* Gaps — big */}
+          {/* Gaps - big */}
           <div style={{ display: 'flex', gap: 20 }}>
             <motion.div {...IN2(0.25)} style={{ flex: 1, padding: '20px 28px', borderRadius: 16, background: `${RED}0a`, border: `2px solid ${RED}55` }}>
               <div style={{ fontSize: 13, color: RED, fontWeight: 700, letterSpacing: '0.1em', marginBottom: 10 }}>GAP TO GPT-5.6</div>
@@ -1564,7 +1564,7 @@ export function GOptimalitySlide() {
         <motion.div key="s5" {...IN}
           style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 20, justifyContent: 'center' }}>
 
-          {/* Bar chart — large */}
+          {/* Bar chart - large */}
           <motion.div {...IN2(0)} style={{ padding: '22px 28px', borderRadius: 18, background: 'var(--glass-04)', border: '1px solid var(--glass-14)' }}>
             <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 16 }}>φ VALUES — UNIFORM λ vs OPTIMAL λ*</div>
             <div style={{ display: 'flex', gap: 40 }}>

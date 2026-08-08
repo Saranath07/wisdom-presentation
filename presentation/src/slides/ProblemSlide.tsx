@@ -103,14 +103,14 @@ export function ProblemSlide() {
               icon: '⬡',
               color: 'var(--gold)',
               title: 'Budget B = cN',
-              desc: 'Linear in N — every comparison costs',
+              desc: 'Linear in N: every comparison costs',
               show: step >= 2,
             },
             {
               icon: '⚡',
               color: 'var(--red)',
               title: 'Noisy oracle',
-              desc: 'P(i>j) = wᵢ/(wᵢ+wⱼ) — Bradley-Terry-Luce',
+              desc: 'P(i>j) = wᵢ/(wᵢ+wⱼ), Bradley-Terry-Luce',
               show: step >= 3,
             },
           ].map(item => (

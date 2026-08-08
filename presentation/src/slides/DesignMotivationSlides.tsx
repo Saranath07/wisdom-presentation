@@ -36,7 +36,7 @@ function pFail(N: number, m: number, pWin: number): number {
   return 1 - Math.pow(pWinMajority(pWin, m), Math.ceil(Math.log2(N)));
 }
 
-// KaTeX helper — renders inline HTML string
+// KaTeX helper - renders inline HTML string
 function _K({ tex, display = false }: { tex: string; display?: boolean }) {
   const html = katex.renderToString(tex, { throwOnError: false, displayMode: display });
   return <span dangerouslySetInnerHTML={{ __html: html }} />;
@@ -104,7 +104,7 @@ export function TournamentFlawSlide() {
   // scores from artificialanalysis.ai leaderboard (July 2026)
   const r1WinIds = [0, 1, 2, 3];      // id of SHOWS8 winner per R1 pair
   const semiWinIds = [1, 2];           // GPT-5.6(1) upsets Fable 5(0) in semi!
-  const finalWinnerId = 1;             // GPT-5.6 wins (WRONG — true best was Fable 5)
+  const finalWinnerId = 1;             // GPT-5.6 wins (WRONG - true best was Fable 5)
 
   // step visibility helpers
   const r1PairVisible = (pairIdx: number) => matchStep > pairIdx;         // R1 pair done
@@ -130,7 +130,7 @@ export function TournamentFlawSlide() {
               <span style={{ color: 'var(--gold)' }}>until a winner is clear?</span>
             </div>
             <div style={{ fontSize: 20, color: 'var(--text-secondary)', maxWidth: 680, lineHeight: 1.7 }}>
-              Phase 1 gives us a bracket. Could we simply extend it — more rounds, more voters — until we're confident?
+              Phase 1 gives us a bracket. Could we simply extend it, with more rounds and more voters, until we're confident?
             </div>
             <div style={{ fontSize: 13, color: 'var(--glass-25)', letterSpacing: '0.1em' }}>
               press → to find out
@@ -238,7 +238,7 @@ export function TournamentFlawSlide() {
                         {isUpsetPath && (
                           <>
                             <text x={m + 80} y={ym-20} textAnchor="middle" fontSize={10} fontWeight={700}
-                              fill="#ef5350" fontFamily="'Space Grotesk',sans-serif">⚡ Close match — noisy oracle!</text>
+                              fill="#ef5350" fontFamily="'Space Grotesk',sans-serif">⚡ Close match: noisy oracle!</text>
                             <text x={m + 80} y={ym+26} textAnchor="middle" fontSize={9}
                               fill="rgba(239,83,80,0.8)" fontFamily="'Space Grotesk',sans-serif">
                               P(upset) = {((1-pWinMajority(pWin,3))*100).toFixed(0)}%
@@ -282,7 +282,7 @@ export function TournamentFlawSlide() {
                     );
                   })()}
 
-                  {/* Final node — WRONG WINNER */}
+                  {/* Final node - WRONG WINNER */}
                   {finalVisible && (
                     <motion.g initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }}
                       transition={{ type: 'spring', stiffness: 150, damping: 16, delay: 0.2 }}>
@@ -315,7 +315,7 @@ export function TournamentFlawSlide() {
               {/* Right: formula + t comparison */}
               <div style={{ width: 420, display: 'flex', flexDirection: 'column', gap: 24, justifyContent: 'center' }}>
 
-                {/* KaTeX formula — BIG */}
+                {/* KaTeX formula - BIG */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: matchStep >= 3 ? 1 : 0 }}
                   transition={{ duration: 0.5 }}
                   style={{ padding: '26px 28px', borderRadius: 16,
@@ -407,7 +407,7 @@ export function TournamentFlawSlide() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Slide 2: Info vs Gap (placeholder — unchanged for now)
+// Slide 2: Info vs Gap (placeholder - unchanged for now)
 // ─────────────────────────────────────────────────────────────────────────────
 export function InfoGapSlide() {
   const [delta, setDelta] = useState(400);
@@ -451,7 +451,7 @@ export function InfoGapSlide() {
           <div style={{ display: 'flex', gap: 12 }}>
             {[
               { label: 'Win prob P(i ≻ j)', value: `${(pA * 100).toFixed(1)}%`, color: '#e8c547', sub: delta < 200 ? 'Dangerously close' : delta > 800 ? 'Almost certain' : 'Clear edge' },
-              { label: 'Information per query', value: `${(infoNorm * 100).toFixed(0)}%`, color: infoNorm > 0.7 ? '#66bb6a' : infoNorm > 0.35 ? '#ffab40' : '#ef5350', sub: infoNorm > 0.7 ? 'High — worth asking' : infoNorm > 0.35 ? 'Medium' : 'Low — skip this pair' },
+              { label: 'Information per query', value: `${(infoNorm * 100).toFixed(0)}%`, color: infoNorm > 0.7 ? '#66bb6a' : infoNorm > 0.35 ? '#ffab40' : '#ef5350', sub: infoNorm > 0.7 ? 'High: worth asking' : infoNorm > 0.35 ? 'Medium' : 'Low: skip this pair' },
               { label: 'Queries to resolve', value: samplesNeeded > 9999 ? '>10k' : samplesNeeded.toLocaleString(), color: samplesNeeded > 500 ? '#ef5350' : '#66bb6a', sub: `to confirm winner at Δ=${delta}` },
             ].map(s => (
               <div key={s.label} style={{ flex: 1, padding: '14px', borderRadius: 12, background: 'var(--glass-03)', border: '1px solid var(--glass-08)', textAlign: 'center' }}>
@@ -462,7 +462,7 @@ export function InfoGapSlide() {
             ))}
           </div>
           <div>
-            <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 6 }}>Information per query — peaks when gap is zero</div>
+            <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 6 }}>Information per query: peaks when gap is zero</div>
             <div style={{ height: 14, borderRadius: 7, background: 'var(--glass-07)', overflow: 'hidden' }}>
               <motion.div animate={{ width: `${infoNorm * 100}%` }} transition={{ type: 'spring', stiffness: 120, damping: 20 }}
                 style={{ height: '100%', borderRadius: 7, background: `linear-gradient(90deg, #66bb6a, #e8c547)` }} />
@@ -472,7 +472,7 @@ export function InfoGapSlide() {
         <div style={{ width: 300, display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[
             { icon: '🎯', title: 'Close matchup (small Δ)', body: 'The result is genuinely uncertain. Each query resolves real doubt about who is better.', highlight: true, color: 'var(--gold)' },
-            { icon: '💤', title: 'Lopsided matchup (large Δ)', body: 'Result is obvious. You spend a query confirming what you already knew — budget wasted.', highlight: false, color: 'var(--text-secondary)' },
+            { icon: '💤', title: 'Lopsided matchup (large Δ)', body: 'Result is obvious. You spend a query confirming what you already knew. Budget wasted.', highlight: false, color: 'var(--text-secondary)' },
             { icon: '📐', title: 'The math behind it', body: 'To separate items with gap Δ you need ≥ 1/Δ² queries on that edge. Small Δ → exponentially more queries needed.', highlight: false, color: 'var(--cyan)' },
           ].map(item => (
             <motion.div key={item.title} layout style={{ padding: '16px', borderRadius: 12, background: item.highlight ? `rgba(232,197,71,0.06)` : 'var(--glass-03)', border: `1px solid ${item.highlight ? 'rgba(232,197,71,0.3)' : 'var(--glass-08)'}` }}>
@@ -497,23 +497,23 @@ export function InfoGapSlide() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Slide 3: Standard design fails (placeholder — unchanged for now)
+// Slide 3: Standard design fails (placeholder - unchanged for now)
 // ─────────────────────────────────────────────────────────────────────────────
 export function AOptimalTrapSlide() {
   return (
     <div style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', color: 'var(--text-secondary)' }}>
-      Slide 3 — coming next
+      Slide 3: coming next
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Slide 4: WiSDoM Objective (placeholder — unchanged for now)
+// Slide 4: WiSDoM Objective (placeholder - unchanged for now)
 // ─────────────────────────────────────────────────────────────────────────────
 export function WisdomObjectiveSlide() {
   return (
     <div style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', color: 'var(--text-secondary)' }}>
-      Slide 4 — coming next
+      Slide 4: coming next
     </div>
   );
 }

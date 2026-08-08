@@ -121,7 +121,7 @@ export function ShowdownSlide() {
           →
         </motion.div>
 
-        {/* Right: Poster grid — 4 top row, 3 bottom row */}
+        {/* Right: Poster grid - 4 top row, 3 bottom row */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 20, alignItems: 'center', justifyContent: 'center', height: '100%' }}>
           {/* Row 1: 4 posters */}
           <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>

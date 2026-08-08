@@ -27,20 +27,20 @@ export function ConclusionSlide() {
       color: 'var(--cyan)',
       title: 'Phase 2: Optimal Design',
       desc: null,
-      descJsx: <><MathFormula formula="\lambda^* = \arg\min_{\lambda} \max_j \varphi_{wj}(\lambda)" style={{display:'inline'}} /> — Frank-Wolfe minimises worst-case gap uncertainty</>,
+      descJsx: <><MathFormula formula="\lambda^* = \arg\min_{\lambda} \max_j \varphi_{wj}(\lambda)" style={{display:'inline'}} />: Frank-Wolfe minimises worst-case gap uncertainty</>,
     },
     {
       icon: '◆',
       color: 'var(--green)',
       title: 'Near-Optimal Guarantee',
       desc: null,
-      descJsx: <>Empirically matches <MathFormula formula="P(\text{fail}) \geq \tfrac{1}{4}e^{-2B\Delta^2/(N-K)}" style={{display:'inline'}} /> — the information-theoretic floor</>,
+      descJsx: <>Empirically matches <MathFormula formula="P(\text{fail}) \geq \tfrac{1}{4}e^{-2B\Delta^2/(N-K)}" style={{display:'inline'}} />, the information-theoretic floor</>,
     },
     {
       icon: '◇',
       color: 'var(--purple)',
       title: 'Frugal: O(N) Budget',
-      desc: 'Linear budget is tight — no algorithm can do better without stronger assumptions',
+      desc: 'Linear budget is tight: no algorithm can do better without stronger assumptions',
     },
   ];
 

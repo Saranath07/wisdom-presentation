@@ -289,7 +289,7 @@ export function RescueSlide() {
                 }}
               >
                 <span>🇰🇷</span>
-                <span>Reply 1988 entered top-{M} — being closely evaluated!</span>
+                <span>Reply 1988 entered top-{M}: being closely evaluated!</span>
               </motion.div>
             )}
           </AnimatePresence>
@@ -423,7 +423,7 @@ export function RescueSlide() {
                 Reply 1988 🇰🇷
               </h1>
               <p style={{ fontSize: 22, color: 'var(--text-primary)', marginBottom: 8 }}>
-                IMDb: 9.2 ★ — True Best Show
+                IMDb: 9.2 ★, True Best Show
               </p>
               <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>
                 Found with just {BUDGET} comparisons

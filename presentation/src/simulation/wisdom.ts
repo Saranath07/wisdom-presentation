@@ -246,7 +246,7 @@ function buildBracket(itemIds: number[]): BracketMatch[][] {
   return rounds;
 }
 
-// ── Full WiSDoM simulation — returns all states ───────────────────────────────
+// ── Full WiSDoM simulation - returns all states ───────────────────────────────
 export function runWiSDoM(config: SimConfig): SimState[] {
   const { n, budgetMultiplier, t, eloK, seed } = config;
   const rng = new LCG(seed);
@@ -485,7 +485,7 @@ export function runShowSimulation(seed: number, budget: number, M: number): Show
   // Initial state
   states.push(snap('bracket', null, 0));
 
-  // ── PHASE 1: Hardcoded bracket outcomes (seed 238: noisy BTL — Reply1988 upset) ──
+  // ── PHASE 1: Hardcoded bracket outcomes (seed 238: noisy BTL - Reply1988 upset) ──
   // Items: 0=Reply1988, 1=AoT, 2=DeathNote, 3=TheOffice, 4=BBT, 5=Riverdale, 6=FullerHouse
   //
   // Round 1:
@@ -524,13 +524,13 @@ export function runShowSimulation(seed: number, budget: number, M: number): Show
   // TheOffice won 3 games → high Elo. AoT won 2 → medium. BBT won 2 → medium.
   // Reply1988 should be near rank 5-6 at this point.
 
-  // ── PHASE 2: Scripted optimal design — targets globally closest Elo pairs ──
+  // ── PHASE 2: Scripted optimal design - targets globally closest Elo pairs ──
   // Comparisons are decided by true BTL probabilities (Reply1988 wins with prob 920/1820 ≈ 50.5%
   // vs equal-rated shows, and higher vs weaker ones). We use a different seed offset to get
   // a run where noise cooperates with the true ranking.
   const phase2Rng = new LCG(seed * 16554 + 1989);
   while (budgetUsed < budget) {
-    // Find globally closest Elo pair — this is the optimal design criterion
+    // Find globally closest Elo pair - this is the optimal design criterion
     let bestA = 0, bestB = 1;
     let closestGap = Math.abs(elos[0] - elos[1]);
     for (let i = 0; i < 7; i++) {
@@ -579,7 +579,7 @@ export function generateAccuracyData(n: number = 16, trials: number = 50): Accur
       const wPred = [...wFinal.items].sort((a, b) => b.eloScore - a.eloScore)[0].id;
       if (wPred === wFinal.trueWinnerId) wisdomWins++;
 
-      // PARWIS (king of hill — always compare against current leader)
+      // PARWIS (king of hill - always compare against current leader)
       const parwisResult = simulatePARWIS(n, bm, trial * 13 + 7);
       if (parwisResult) parwisWins++;
 

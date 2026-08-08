@@ -139,7 +139,7 @@ function App() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Slide number — top right */}
+      {/* Slide number - top right */}
       <div style={{
         position: 'fixed',
         top: 20,
@@ -160,7 +160,7 @@ function App() {
         </span>
       </div>
 
-      {/* Theme toggle — top left, next to fullscreen */}
+      {/* Theme toggle - top left, next to fullscreen */}
       <button
         onClick={() => setIsDark(d => !d)}
         title={isDark ? 'Switch to light theme (T)' : 'Switch to dark theme (T)'}
@@ -176,7 +176,7 @@ function App() {
         {isDark ? '☀' : '☾'}
       </button>
 
-      {/* Fullscreen button — top left */}
+      {/* Fullscreen button - top left */}
       <button
         onClick={toggleFullscreen}
         title={isFullscreen ? 'Exit fullscreen (F)' : 'Fullscreen (F)'}
@@ -196,7 +196,7 @@ function App() {
         </svg>
       </button>
 
-      {/* Navigation arrows — smaller */}
+      {/* Navigation arrows - smaller */}
       <button
         onClick={prev}
         disabled={slideIdx === 0}
@@ -225,7 +225,7 @@ function App() {
         }}
       >→</button>
 
-      {/* Footer: title + dots — compact, won't overlap */}
+      {/* Footer: title + dots - compact, won't overlap */}
       <div style={{
         position: 'fixed', bottom: 6, left: '50%', transform: 'translateX(-50%)',
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,

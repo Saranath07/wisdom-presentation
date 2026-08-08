@@ -7,43 +7,38 @@ const ML = (f: string) => (
 );
 
 // ── Python-verified constants ─────────────────────────────────────────────────
-// 4 players: Fable(1.00), GPT(0.80), Kimi(0.60), Llama(0.20)
-// f(i,j) = sigmoid(θ_i−θ_j) * (1 − sigmoid(θ_i−θ_j))
-const F_FG = 0.2475; // f Fable-GPT
-const F_FK = 0.2403; // f Fable-Kimi
-const F_FL = 0.2139; // f Fable-Llama
-const F_GK = 0.2475; // f GPT-Kimi
+// Example 1: θ=[1.00, 0.80, 0.60, 0.40]
+// Chain: 30 F-G + 30 G-K + 30 K-L, underplayed: 2 F-K + 2 F-L + 2 G-L
+// Scalar f values (all near equal — blind to transitivity)
+const F_FG = 0.2475; // f Fable-GPT  Δ=0.20
+const F_FK = 0.2403; // f Fable-Kimi Δ=0.40
+const F_FL = 0.2139; // f Fable-Llama Δ=0.60
+const F_GK = 0.2475; // f GPT-Kimi Δ=0.20
+// φ₁ values — G-opt picks Llama (most uncertain despite chain helping it)
+const EX1_PHI1_GPT   = 0.1212;  // most-played adjacent pair → already well known
+const EX1_PHI1_KIMI  = 0.2123;
+const EX1_PHI1_LLAMA = 0.2984;  // G-optimal picks this ← chain exploited
 
-// Example 1: after 30 F-K + 30 K-G queries
-const EX1_PHI1_GPT  = 0.2734;  // (e_w-e_GPT)^T I^{-1} (e_w-e_GPT)
-const EX1_PHI1_KIMI = 0.1387;
-const EX1_PHI1_LLAMA_M = 13333333.4; // never played — essentially infinite
-
-// Example 2: θ_GPT=0.85(Δ=0.15), θ_Kimi=0.70(Δ=0.30), θ_Llama=0.20(Δ=0.80)
-// Prior: 50 F-GPT + 10 F-Kimi + 5 F-Llama
-// Obvious=Fable-GPT(closest), G-optimal=Fable-Llama, Our=Fable-Kimi (all different!)
-const EX2_PHI1_GPT   = 0.0805;  const EX2_CI_GPT   = 0.5559;
-const EX2_PHI1_KIMI  = 0.4091;  const EX2_CI_KIMI  = 1.2536;
-const EX2_PHI1_LLAMA = 0.9350;  const EX2_CI_LLAMA = 1.8952;
-// Full φ = φ₁/Δ²
-const EX2_PHI_GPT   = 3.576;    // Δ=0.15
-const EX2_PHI_KIMI  = 4.545;    // Δ=0.30 → the real bottleneck (medium gap, neglected!)
-const EX2_PHI_LLAMA = 1.461;    // Δ=0.80 → large CI but large gap, already safe enough
-const EX2_DELTA_GPT  = 0.15;
-const EX2_DELTA_KIMI = 0.30;
-const EX2_DELTA_LLAMA = 0.80;
-
-// Fisher matrix (20 F-G + 20 F-K + 5 F-L) — rounded
-const I_EX2 = [
-  [10.825, -4.950, -4.805, -1.070],
-  [-4.950,  4.950,  0.000,  0.000],
-  [-4.805,  0.000,  4.805,  0.000],
-  [-1.070,  0.000,  0.000,  1.070],
-];
+// Example 2: θ=[1.00, 0.85, 0.60, 0.10]
+// Setup: 20 F-G + 20 G-K + 40 K-L (chain) + 10 F-K + 4 F-L + 20 G-L
+// (F-L fewest games — audience says "play F-L!" G-opt agrees, WiSDoM doesn't)
+const EX2_PHI1_GPT   = 0.1365;  // close threat, few F-G games
+const EX2_PHI1_KIMI  = 0.1661;
+const EX2_PHI1_LLAMA = 0.1877;  // G-opt picks this (big φ₁) but Δ=0.90 — already safe!
+// φ = φ₁/Δ²
+const EX2_PHI_GPT   = 6.06;    // Δ=0.15 → REAL threat (small gap!)
+const EX2_PHI_KIMI  = 0.82;    // Δ=0.45
+const EX2_PHI_LLAMA = 0.23;    // Δ=0.90 → large CI but already safe
+const EX2_DELTA_GPT   = 0.15;
+const EX2_DELTA_KIMI  = 0.45;
+const EX2_DELTA_LLAMA = 0.90;
+const EX2_CI_GPT   = 0.7268;   // 1.96*sqrt(phi1)
+const EX2_CI_KIMI  = 0.7993;
+const EX2_CI_LLAMA = 0.8488;
 
 // Budget-bar keyframes (4-player, Python-verified)
 // Prior: 30 Fable-Kimi + 30 Kimi-GPT. Add B=50 more queries.
-// Optimal λ*: 91% Fable-GPT + 9% Fable-Llama (non-obvious — Fable-GPT is obvious, but Llama needs some too)
+// Optimal λ*: 91% Fable-GPT + 9% Fable-Llama (non-obvious - Fable-GPT is obvious, but Llama needs some too)
 // normCI = CI_hw / Δ. Capped at 12.5 for display (Llama starts at ∞).
 const KEYFRAMES = [
   { lamFL: 0.000, lamFG: 0.650, phi_gpt: 1.99, phi_kimi: 0.41, phi_llama: 25.00, normCI_gpt: 2.77, normCI_kimi: 1.25, normCI_llama: 12.50 },
@@ -60,15 +55,13 @@ const SDP_PHI_KIMI_OPT = 16.34; const SDP_WORST_UNIFORM = 32.19;
 const SDP_WORST_OPT = 16.41; const SDP_IMPROVEMENT = 49;
 
 // ── Step map ──────────────────────────────────────────────────────────────────
-// step 0 → sub 0      : The question (4 players, 1 query)
-// step 1 → sub 0,1,2  : Scalar f fails — transitivity blindspot
-// step 2 → sub 0,1,2  : Fisher matrix + G-optimality (φ₁ numerator only)
-// step 3 → sub 0,1    : G-optimality fails — ignores gap (Example 2)
-// step 4 → sub 0,1    : Fix: divide by Δ² → φ = φ₁/Δ²
-// step 5 → sub 0..5   : Water-filling (budget bars)
-// step 6 → sub 0      : Full SDP objective
-// step 5 is now just the SDP formula + narrative (no animation)
-const MAX_SUBS: Record<number, number> = { 0: 0, 1: 0, 2: 2, 3: 3, 4: 3, 5: 0 };
+// step 0 → sub 0      : Setup — 4 players, match counts, 1 query left
+// step 1 → sub 0      : Scalar f fails — all ≈ 0.24, blind to transitivity
+// step 2 → sub 0,1,2  : G-optimality (φ₁) — exploits transitivity (Example 1)
+// step 3 → sub 0,1,2  : G-optimality fails — ignores Δ (Example 2)
+// step 4 → sub 0,1,2  : Fix: divide by Δ² → φ = φ₁/Δ²
+// step 5 → sub 0      : Full SDP objective
+const MAX_SUBS: Record<number, number> = { 0: 0, 1: 0, 2: 2, 3: 3, 4: 2, 5: 0 };
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
 function Label({ text }: { text: string }) {
@@ -98,151 +91,204 @@ function PlayerChip({ name, theta, color, role, dim }: {
   );
 }
 
-// ── Step 0 — The question ─────────────────────────────────────────────────────
+// ── Step 0 - Setup: players + match history + 1 query ────────────────────────
 function Step0() {
+  const chainPairs = [
+    { label: 'Fable–GPT',   n: 30, colorA: '#e8c547', colorB: '#ef5350' },
+    { label: 'GPT–Kimi',    n: 30, colorA: '#ef5350',  colorB: '#66bb6a' },
+    { label: 'Kimi–Llama',  n: 30, colorA: '#66bb6a',  colorB: '#78909c' },
+  ];
+  const sparePairs = [
+    { label: 'Fable–Kimi',  n: 2, colorA: '#e8c547', colorB: '#66bb6a' },
+    { label: 'Fable–Llama', n: 2, colorA: '#e8c547', colorB: '#78909c' },
+    { label: 'GPT–Llama',   n: 2, colorA: '#ef5350',  colorB: '#78909c' },
+  ];
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 28, justifyContent: 'center', alignItems: 'center' }}>
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 52, fontWeight: 900, fontFamily: "'Space Grotesk',sans-serif", lineHeight: 1.15 }}>
+      <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 56, fontWeight: 900, fontFamily: "'Space Grotesk',sans-serif", lineHeight: 1.1 }}>
           You have <span style={{ color: 'var(--gold)' }}>1 query</span> left.
         </div>
-        <div style={{ fontSize: 22, color: 'var(--text-secondary)', marginTop: 10, lineHeight: 1.6 }}>
-          4 LLMs. Budget nearly spent. Which pair gives the most information?
+        <div style={{ fontSize: 24, color: 'var(--text-secondary)', marginTop: 10 }}>
+          4 LLMs. Budget nearly spent. Which pair is most informative?
         </div>
       </motion.div>
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-        style={{ display: 'flex', gap: 18, alignItems: 'flex-start' }}>
+      {/* Players */}
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+        style={{ display: 'flex', gap: 20 }}>
         <PlayerChip name="Fable 5"  theta="1.00" color="#e8c547" role="Leader (winner?)" />
         <PlayerChip name="GPT-5.6"  theta="0.80" color="#ef5350" role="Challenger" />
         <PlayerChip name="Kimi K3"  theta="0.60" color="#66bb6a" role="Challenger" />
-        <PlayerChip name="Llama 4"  theta="0.20" color="#78909c" role="Challenger" />
+        <PlayerChip name="Llama 4"  theta="0.40" color="#78909c" role="Challenger" />
       </motion.div>
 
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
-        style={{ fontSize: 20, fontWeight: 700, color: 'var(--gold)', padding: '14px 32px', borderRadius: 12, background: 'rgba(232,197,71,0.1)', border: '1.5px solid rgba(232,197,71,0.4)', textAlign: 'center' }}>
-        Obvious answer: <span style={{ color: '#ef5350' }}>Fable vs GPT</span> — closest threat, maximum uncertainty?
+      {/* Match history */}
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+        style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+        {/* Chain pairs */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.15em', color: 'var(--cyan)', textTransform: 'uppercase', marginBottom: 2 }}>Well-played (chain)</div>
+          {chainPairs.map(p => (
+            <div key={p.label} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 22px', borderRadius: 12, background: 'rgba(79,195,247,0.07)', border: '1.5px solid rgba(79,195,247,0.25)' }}>
+              <span style={{ fontSize: 40, fontWeight: 900, color: 'var(--cyan)', fontFamily: "'Space Grotesk',sans-serif", minWidth: 44 }}>{p.n}</span>
+              <span style={{ fontSize: 20, fontWeight: 700 }}>
+                <span style={{ color: p.colorA }}>{p.label.split('–')[0]}</span>
+                <span style={{ color: 'var(--text-muted)' }}> – </span>
+                <span style={{ color: p.colorB }}>{p.label.split('–')[1]}</span>
+              </span>
+              <span style={{ fontSize: 15, color: 'var(--text-muted)' }}>games</span>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ alignSelf: 'center', fontSize: 32, color: 'var(--glass-25)', padding: '0 4px' }}>+</div>
+
+        {/* Sparse pairs */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.15em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 2 }}>Rarely played</div>
+          {sparePairs.map(p => (
+            <div key={p.label} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 22px', borderRadius: 12, background: 'rgba(232,197,71,0.06)', border: '1.5px solid rgba(232,197,71,0.2)' }}>
+              <span style={{ fontSize: 40, fontWeight: 900, color: 'var(--gold)', fontFamily: "'Space Grotesk',sans-serif", minWidth: 44 }}>{p.n}</span>
+              <span style={{ fontSize: 20, fontWeight: 700 }}>
+                <span style={{ color: p.colorA }}>{p.label.split('–')[0]}</span>
+                <span style={{ color: 'var(--text-muted)' }}> – </span>
+                <span style={{ color: p.colorB }}>{p.label.split('–')[1]}</span>
+              </span>
+              <span style={{ fontSize: 15, color: 'var(--text-muted)' }}>games</span>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Question */}
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.75 }}
+        style={{ fontSize: 22, fontWeight: 700, color: 'var(--gold)', padding: '14px 32px', borderRadius: 12, background: 'rgba(232,197,71,0.1)', border: '1.5px solid rgba(232,197,71,0.4)', textAlign: 'center' }}>
+        Obvious answer: play <span style={{ color: '#e8c547' }}>Fable–Kimi</span> or <span style={{ color: '#78909c' }}>Fable–Llama</span> — they've barely played!
       </motion.div>
     </div>
   );
 }
 
-// ── Step 1 — Scalar f fails ───────────────────────────────────────────────────
+// ── Step 1 - Scalar f fails ───────────────────────────────────────────────────
 function Step1({ sub: _sub }: { sub: number }) {
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 32, justifyContent: 'center' }}>
-      <Label text="Already 30 Fable–Kimi + 30 Kimi–GPT played" />
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 28, justifyContent: 'center' }}>
+      <Label text="Naïve approach: scalar Fisher information per game" />
 
-      {/* History + formula */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
-        <div style={{ fontSize: 26, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-          History: <strong style={{ color: 'var(--cyan)' }}>30 Fable–Kimi</strong> + <strong style={{ color: 'var(--cyan)' }}>30 Kimi–GPT</strong>
+        style={{ textAlign: 'center' }}>
+        <MathFormula formula="f_{ij} = p_{ij}(1 - p_{ij})" block style={{ fontSize: '2.4em' }} />
+        <div style={{ fontSize: 18, color: 'var(--text-secondary)', marginTop: 10 }}>
+          How much information does one game between <em>i</em> and <em>j</em> carry?
         </div>
-        <div style={{ fontSize: 20, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-          Scalar criterion:
-        </div>
-        <MathFormula formula="f_{ij} = p_{ij}(1 - p_{ij})" block style={{ fontSize: '2em' }} />
       </motion.div>
 
       {/* Big f-value boxes */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-        style={{ display: 'flex', gap: 20 }}>
+        style={{ display: 'flex', gap: 14 }}>
         {[
-          { label: 'Fable–GPT',   f: F_FG, color: '#ef5350', note: '← scalar picks this' },
-          { label: 'Fable–Kimi',  f: F_FK, color: '#66bb6a', note: '' },
-          { label: 'Fable–Llama', f: F_FL, color: '#78909c', note: '' },
-          { label: 'GPT–Kimi',   f: F_GK, color: '#4fc3f7', note: '← also highest f' },
+          { label: 'Fable–GPT',   f: F_FG, color: '#ef5350', sub: '30 games', dim: false },
+          { label: 'Fable–Kimi',  f: F_FK, color: '#66bb6a', sub: '2 games',  dim: false },
+          { label: 'Fable–Llama', f: F_FL, color: '#78909c', sub: '2 games',  dim: false },
+          { label: 'GPT–Kimi',    f: F_GK, color: '#4fc3f7', sub: '30 games', dim: false },
         ].map(r => (
           <div key={r.label} style={{
-            flex: 1, padding: '28px 16px', borderRadius: 16, textAlign: 'center',
-            background: r.note ? 'rgba(239,83,80,0.1)' : 'var(--glass-04)',
-            border: `2px solid ${r.note ? '#ef535088' : 'var(--glass-08)'}`,
+            flex: 1, padding: '24px 14px', borderRadius: 16, textAlign: 'center',
+            background: 'var(--glass-04)', border: '2px solid var(--glass-08)',
             minWidth: 0, overflow: 'hidden',
           }}>
-            <div style={{ fontSize: 20, color: r.color, fontWeight: 700, marginBottom: 14 }}>{r.label}</div>
-            <MathFormula formula={`f = ${r.f}`} block style={{ fontSize: '2.1em' }} />
-            {r.note && <div style={{ fontSize: 15, color: '#ef9a9a', marginTop: 12, fontWeight: 600 }}>{r.note}</div>}
+            <div style={{ fontSize: 18, color: r.color, fontWeight: 700, marginBottom: 6 }}>{r.label}</div>
+            <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 12 }}>{r.sub}</div>
+            <MathFormula formula={`f = ${r.f}`} block style={{ fontSize: '2em' }} />
           </div>
         ))}
       </motion.div>
 
-      {/* Bottom punchline */}
+      {/* Punchline */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
-        style={{ fontSize: 22, color: '#ef9a9a', fontWeight: 700, textAlign: 'center' }}>
-        f(Fable–GPT) ≈ f(GPT–Kimi) ≈ f(Fable–Kimi) — scalar info can't distinguish them.
+        style={{ padding: '16px 28px', borderRadius: 14, background: 'rgba(239,83,80,0.08)', border: '2px solid rgba(239,83,80,0.4)', textAlign: 'center' }}>
+        <div style={{ fontSize: 20, color: '#ef9a9a', fontWeight: 700 }}>
+          All pairs score ≈ 0.24 — scalar <em>f</em> is blind to how many games were already played.
+        </div>
+        <div style={{ fontSize: 17, color: 'var(--text-secondary)', marginTop: 8 }}>
+          It cannot see that 30+30+30 games along the chain <em>already tell us</em> something about the underplayed pairs.
+        </div>
       </motion.div>
     </div>
   );
 }
 
-// ── Step 2 — Fisher matrix + G-optimality (φ₁ only) ─────────────────────────
+// ── Step 2 - G-optimality exploits transitivity (Example 1) ─────────────────
 function Step2({ sub }: { sub: number }) {
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 24, justifyContent: 'center' }}>
-      <Label text="Experimental Design — Fisher Information and G-Optimality" />
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 22, justifyContent: 'center' }}>
+      <Label text="Fisher Information + G-Optimality: capturing transitivity" />
 
-      {/* Fisher matrix formula */}
+      {/* Fisher matrix + φ₁ formula */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        style={{ padding: '20px 32px', borderRadius: 16, background: 'rgba(232,197,71,0.06)', border: '1.5px solid rgba(232,197,71,0.3)', textAlign: 'center' }}>
-        <MathFormula formula={String.raw`I(\theta;\lambda) = B\!\sum_{i<j}\lambda_{ij}\,p_{ij}(1-p_{ij})\,(e_i-e_j)(e_i-e_j)^\top`} block style={{ fontSize: '2em' }} />
-        <div style={{ marginTop: 10, fontSize: 15, color: 'var(--text-muted)', letterSpacing: '0.03em' }}>
-          {ML('e_i')} = standard basis vector for item <em>i</em> &nbsp;·&nbsp; {ML('e_i - e_j')} = direction of pair (<em>i</em>, <em>j</em>) comparison
+        style={{ padding: '18px 28px', borderRadius: 16, background: 'rgba(232,197,71,0.06)', border: '1.5px solid rgba(232,197,71,0.3)', textAlign: 'center' }}>
+        <MathFormula formula={String.raw`I(\theta;\lambda) = B\!\sum_{i<j}\lambda_{ij}\,p_{ij}(1-p_{ij})\,(e_i-e_j)(e_i-e_j)^\top`} block style={{ fontSize: '1.85em' }} />
+        <div style={{ marginTop: 8, fontSize: 14, color: 'var(--text-muted)' }}>
+          Encodes the full history — the 30+30+30 chain propagates transitivity through the matrix
         </div>
       </motion.div>
 
-      {/* Cramér-Rao + G-optimality objective */}
+      {/* Cramér-Rao + G-optimality */}
       {sub >= 1 && (
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
-          style={{ display: 'flex', gap: 20, alignItems: 'stretch' }}>
-          {/* Cramér-Rao */}
-          <div style={{ flex: 1, padding: '20px 28px', borderRadius: 16, background: 'rgba(79,195,247,0.06)', border: '1.5px solid rgba(79,195,247,0.3)', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 12, justifyContent: 'center' }}>
-            <div style={{ fontSize: 14, color: 'var(--cyan)', fontWeight: 700, letterSpacing: '0.1em' }}>CRAMÉR-RAO</div>
-            <MathFormula formula={String.raw`\varphi_1^{(j)} = (e_w - e_j)^\top I(\theta;\lambda)^{-1}(e_w - e_j)`} block style={{ fontSize: '1.7em' }} />
+          style={{ display: 'flex', gap: 16, alignItems: 'stretch' }}>
+          <div style={{ flex: 1, padding: '18px 24px', borderRadius: 16, background: 'rgba(79,195,247,0.06)', border: '1.5px solid rgba(79,195,247,0.3)', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 10, justifyContent: 'center' }}>
+            <div style={{ fontSize: 13, color: 'var(--cyan)', fontWeight: 700, letterSpacing: '0.1em' }}>CRAMÉR-RAO BOUND</div>
+            <MathFormula formula={String.raw`\varphi_1^{(j)} = (e_w - e_j)^\top I(\theta;\lambda)^{-1}(e_w - e_j)`} block style={{ fontSize: '1.6em' }} />
           </div>
-          {/* G-optimality objective */}
-          <div style={{ flex: 1, padding: '20px 28px', borderRadius: 16, background: 'rgba(79,195,247,0.06)', border: '1.5px solid rgba(79,195,247,0.3)', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 12, justifyContent: 'center' }}>
-            <div style={{ fontSize: 14, color: 'var(--cyan)', fontWeight: 700, letterSpacing: '0.1em' }}>G-OPTIMALITY OBJECTIVE</div>
-            <MathFormula formula={String.raw`\min_{\lambda} \max_{j} \; \varphi_1^{(j)}`} block style={{ fontSize: '2.2em' }} />
+          <div style={{ flex: 1, padding: '18px 24px', borderRadius: 16, background: 'rgba(79,195,247,0.06)', border: '1.5px solid rgba(79,195,247,0.3)', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 10, justifyContent: 'center' }}>
+            <div style={{ fontSize: 13, color: 'var(--cyan)', fontWeight: 700, letterSpacing: '0.1em' }}>G-OPTIMALITY: minimize worst-case uncertainty</div>
+            <MathFormula formula={String.raw`\min_{\lambda} \max_{j} \; \varphi_1^{(j)}`} block style={{ fontSize: '2em' }} />
           </div>
         </motion.div>
       )}
 
-      {/* φ₁ values for each LLM */}
+      {/* φ₁ values — shows G-opt exploiting transitivity */}
       {sub >= 2 && (
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
-          style={{ display: 'flex', gap: 16 }}>
+          style={{ display: 'flex', gap: 14 }}>
           {[
-            { label: 'Fable–GPT',   phi: EX1_PHI1_GPT,       color: '#ef5350', note: '' },
-            { label: 'Fable–Kimi',  phi: EX1_PHI1_KIMI,      color: '#66bb6a', note: '' },
-            { label: 'Fable–Llama', phi: null,                color: '#78909c', note: '← G-optimal picks this', big: true },
+            { label: 'Fable–GPT',   phi: EX1_PHI1_GPT,   color: '#ef5350', games: '30 games', note: '← well-played chain pair' },
+            { label: 'Fable–Kimi',  phi: EX1_PHI1_KIMI,  color: '#66bb6a', games: '2 games',  note: '' },
+            { label: 'Fable–Llama', phi: EX1_PHI1_LLAMA, color: '#78909c', games: '2 games',  note: '← G-optimal picks this', highlight: true },
           ].map(r => (
             <div key={r.label} style={{
-              flex: 1, padding: '22px 16px', borderRadius: 16, textAlign: 'center',
-              background: r.note ? 'rgba(239,83,80,0.08)' : 'var(--glass-04)',
-              border: `2px solid ${r.note ? '#ef535066' : r.color + '44'}`,
+              flex: 1, padding: '20px 14px', borderRadius: 16, textAlign: 'center',
+              background: r.highlight ? 'rgba(102,187,106,0.08)' : 'var(--glass-04)',
+              border: `2px solid ${r.highlight ? '#66bb6a88' : r.color + '44'}`,
             }}>
-              <div style={{ fontSize: 20, color: r.color, fontWeight: 700, marginBottom: 12 }}>{r.label}</div>
-              {r.phi !== null
-                ? <MathFormula formula={`\\varphi_1 = ${(r.phi as number).toFixed(4)}`} block style={{ fontSize: '2em' }} />
-                : <div style={{ fontSize: '2em', fontWeight: 900, color: '#ef5350', fontFamily: "'Space Grotesk',sans-serif" }}>≈ 13M</div>
-              }
-              {r.note && <div style={{ fontSize: 15, color: '#66bb6a', marginTop: 10, fontWeight: 700 }}>{r.note}</div>}
+              <div style={{ fontSize: 18, color: r.color, fontWeight: 700, marginBottom: 4 }}>{r.label}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12 }}>{r.games}</div>
+              <MathFormula formula={`\\varphi_1 = ${r.phi.toFixed(4)}`} block style={{ fontSize: '1.9em' }} />
+              {r.note && <div style={{ fontSize: 13, color: '#66bb6a', marginTop: 10, fontWeight: 700 }}>{r.note}</div>}
             </div>
           ))}
         </motion.div>
       )}
 
-      {sub < 2 && <div style={{ fontSize: 14, color: 'var(--glass-25)', textAlign: 'center' }}>→ press to continue ({sub + 1}/3)</div>}
+      {sub >= 2 && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
+          style={{ padding: '12px 24px', borderRadius: 12, background: 'rgba(79,195,247,0.07)', border: '1.5px solid rgba(79,195,247,0.3)', textAlign: 'center', fontSize: 17, color: 'var(--cyan)', fontWeight: 700 }}>
+          φ₁ is smallest for Fable–GPT — the 30-game chain already informs Kimi/Llama via transitivity. Scalar <em>f</em> could never see this.
+        </motion.div>
+      )}
+
+      {sub < 2 && <div style={{ fontSize: 13, color: 'var(--glass-25)', textAlign: 'center' }}>→ press to continue ({sub + 1}/3)</div>}
     </div>
   );
 }
 
-// ── Step 3 — G-optimality fails Example 2 ────────────────────────────────────
+// ── Step 3 - G-optimality fails Example 2 ────────────────────────────────────
 const EX2_PAIRS = [
-  { label: 'Fable vs GPT',   phi1: EX2_PHI1_GPT,   ci: EX2_CI_GPT,   delta: EX2_DELTA_GPT,   color: '#ef5350', noteBox: '← obvious choice',  noteRatio: '← obvious (wrong)' },
-  { label: 'Fable vs Kimi',  phi1: EX2_PHI1_KIMI,  ci: EX2_CI_KIMI,  delta: EX2_DELTA_KIMI,  color: '#66bb6a', noteBox: '',                   noteRatio: '← overlooked bottleneck' },
-  { label: 'Fable vs Llama', phi1: EX2_PHI1_LLAMA, ci: EX2_CI_LLAMA, delta: EX2_DELTA_LLAMA, color: '#78909c', noteBox: '← G-optimal picks',  noteRatio: '← G-optimal (wrong)' },
+  { label: 'Fable vs GPT',   phi1: EX2_PHI1_GPT,   phi_norm: EX2_PHI_GPT,   delta: EX2_DELTA_GPT,   color: '#ef5350', gopt: false, wisdom: true  },
+  { label: 'Fable vs Kimi',  phi1: EX2_PHI1_KIMI,  phi_norm: EX2_PHI_KIMI,  delta: EX2_DELTA_KIMI,  color: '#66bb6a', gopt: false, wisdom: false },
+  { label: 'Fable vs Llama', phi1: EX2_PHI1_LLAMA, phi_norm: EX2_PHI_LLAMA, delta: EX2_DELTA_LLAMA, color: '#78909c', gopt: true,  wisdom: false },
 ];
 
 function Step3({ sub }: { sub: number }) {
@@ -250,11 +296,11 @@ function Step3({ sub }: { sub: number }) {
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14, overflow: 'hidden', justifyContent: expanded ? 'center' : 'flex-start' }}>
 
-      {/* Setup card — centered & compact on sub=0, compressed to top chip on sub>=1 */}
+      {/* Setup card */}
       <motion.div
         layout
         animate={expanded
-          ? { padding: '32px 56px', borderRadius: 20 }
+          ? { padding: '28px 48px', borderRadius: 20 }
           : { padding: '10px 24px', borderRadius: 12 }
         }
         transition={{ type: 'spring', stiffness: 180, damping: 26 }}
@@ -266,100 +312,82 @@ function Step3({ sub }: { sub: number }) {
       >
         {expanded ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 14, color: 'var(--cyan)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 20 }}>NEW SETUP</div>
-            <div style={{ display: 'flex', gap: 56, justifyContent: 'center', marginBottom: 24 }}>
+            <div style={{ fontSize: 14, color: 'var(--cyan)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 22 }}>NEW SCENARIO — closer ratings, fewer Fable–Llama games</div>
+            {/* Ratings */}
+            <div style={{ display: 'flex', gap: 36, justifyContent: 'center', marginBottom: 24 }}>
               {[
-                { pair: 'Fable–GPT',   n: 50, color: '#ef5350' },
-                { pair: 'Fable–Kimi',  n: 10, color: '#66bb6a' },
-                { pair: 'Fable–Llama', n: 5,  color: '#78909c' },
-              ].map(r => (
-                <div key={r.pair} style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: 72, fontWeight: 900, color: r.color, fontFamily: "'Space Grotesk',sans-serif", lineHeight: 1 }}>{r.n}</div>
-                  <div style={{ fontSize: 20, color: 'var(--text-secondary)', marginTop: 8 }}>{r.pair}</div>
+                { name: 'Fable', theta: '1.00', color: '#e8c547' },
+                { name: 'GPT',   theta: '0.85', color: '#ef5350' },
+                { name: 'Kimi',  theta: '0.60', color: '#66bb6a' },
+                { name: 'Llama', theta: '0.10', color: '#78909c' },
+              ].map(p => (
+                <div key={p.name} style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: p.color }}>{p.name}</div>
+                  <div style={{ fontSize: 17, color: 'var(--text-secondary)', marginTop: 4 }}>{ML(`\\theta=${p.theta}`)}</div>
                 </div>
               ))}
             </div>
-            <div style={{ fontSize: 20, color: 'var(--text-secondary)' }}>
-              Obvious choice: <strong style={{ color: '#ef5350' }}>Fable–GPT</strong> (closest, Δ=0.15) &nbsp;·&nbsp;
-              G-optimal picks: <strong style={{ color: '#78909c' }}>Fable–Llama</strong> (largest {ML('\\varphi_1')})
+            {/* Game counts */}
+            <div style={{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 10, flexWrap: 'wrap' }}>
+              {[
+                { pair: 'F-G', n: 20, color: '#ef5350', note: '' },
+                { pair: 'G-K', n: 20, color: '#66bb6a', note: '' },
+                { pair: 'K-L', n: 40, color: '#78909c', note: '' },
+                { pair: 'F-K', n: 10, color: '#66bb6a', note: '' },
+                { pair: 'F-L', n:  4, color: '#78909c', note: 'fewest!' },
+                { pair: 'G-L', n: 20, color: '#78909c', note: '' },
+              ].map(r => (
+                <div key={r.pair} style={{ textAlign: 'center', padding: '10px 18px', borderRadius: 10, background: r.note ? 'rgba(232,197,71,0.1)' : 'var(--glass-04)', border: `1.5px solid ${r.note ? 'rgba(232,197,71,0.5)' : 'var(--glass-08)'}` }}>
+                  <div style={{ fontSize: 34, fontWeight: 900, color: r.note ? 'var(--gold)' : r.color, fontFamily: "'Space Grotesk',sans-serif", lineHeight: 1 }}>{r.n}</div>
+                  <div style={{ fontSize: 15, color: 'var(--text-secondary)', marginTop: 4 }}>{r.pair}</div>
+                  {r.note && <div style={{ fontSize: 12, color: 'var(--gold)', fontWeight: 700, marginTop: 2 }}>{r.note}</div>}
+                </div>
+              ))}
             </div>
-            <div style={{ marginTop: 18, fontSize: 15, color: 'var(--glass-25)' }}>→ press to see why both are wrong</div>
+            <div style={{ marginTop: 18, fontSize: 14, color: 'var(--glass-25)' }}>→ press to see the φ₁ values</div>
           </motion.div>
         ) : (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <span style={{ color: 'var(--cyan)', fontWeight: 700, letterSpacing: '0.08em' }}>SETUP</span>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ display: 'flex', gap: 20, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <span style={{ color: 'var(--cyan)', fontWeight: 700, fontSize: 13, letterSpacing: '0.08em' }}>EX 2</span>
             {[
-              { pair: 'Fable–GPT', n: 50, color: '#ef5350' },
-              { pair: 'Fable–Kimi', n: 10, color: '#66bb6a' },
-              { pair: 'Fable–Llama', n: 5, color: '#78909c' },
+              { pair: 'F-G:20', color: '#ef5350' }, { pair: 'G-K:20', color: '#66bb6a' },
+              { pair: 'K-L:40', color: '#78909c' }, { pair: 'F-K:10', color: '#66bb6a' },
+              { pair: 'F-L:4', color: 'var(--gold)' }, { pair: 'G-L:20', color: '#78909c' },
             ].map(r => (
-              <span key={r.pair} style={{ color: r.color, fontWeight: 700 }}>{r.n} {r.pair}</span>
+              <span key={r.pair} style={{ color: r.color, fontWeight: 700, fontSize: 14 }}>{r.pair}</span>
             ))}
+            <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>θ:[1.00, 0.85, 0.60, 0.10]</span>
           </motion.div>
         )}
       </motion.div>
 
-      {/* Left / Right split — rows revealed one at a time */}
+      {/* φ₁ column — full width, G-opt view only */}
       {sub >= 1 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-
-          {/* Two columns */}
-          <div style={{ display: 'flex', gap: 16 }}>
-
-            {/* LEFT — φ₁ boxes */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 2 }}>
-                {ML('\\varphi_1^{(j)}')} — G-OPTIMAL CRITERION
-              </div>
-              {EX2_PAIRS.map((r, i) => i < sub && (
-                <motion.div key={r.label}
-                  initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}
-                  style={{
-                    padding: '14px 18px', borderRadius: 14, display: 'flex', alignItems: 'center', gap: 16,
-                    background: r.noteBox ? (r.color === '#78909c' ? 'rgba(239,83,80,0.08)' : 'rgba(239,83,80,0.05)') : 'var(--glass-04)',
-                    border: `2px solid ${r.color}44`,
-                  }}>
-                  <div style={{ minWidth: 110, fontSize: 16, color: r.color, fontWeight: 700 }}>{r.label}</div>
-                  <MathFormula formula={`\\Delta={${r.delta.toFixed(2)}}`} style={{ display: 'inline', fontSize: '1em', color: 'var(--text-secondary)' }} />
-                  <MathFormula formula={`\\varphi_1={${r.phi1.toFixed(4)}}`} block style={{ fontSize: '1.4em', color: r.color, flex: 1, textAlign: 'center' }} />
-                  <MathFormula formula={`\\text{CI}={${r.ci.toFixed(4)}}`} style={{ display: 'inline', fontSize: '0.95em', color: 'var(--text-secondary)' }} />
-                  {r.noteBox && <div style={{ fontSize: 12, color: '#ef9a9a', fontWeight: 700, minWidth: 100 }}>{r.noteBox}</div>}
-                </motion.div>
-              ))}
-            </div>
-
-            {/* RIGHT — CI/Δ danger ratios */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ fontSize: 13, color: 'var(--gold)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 2 }}>
-                {ML('\\text{CI}_{hw}/\\Delta')} — DANGER PER UNIT GAP
-              </div>
-              {EX2_PAIRS.map((r, i) => {
-                const ratio = r.ci / r.delta;
-                const isKimi = r.color === '#66bb6a';
-                return i < sub && (
-                  <motion.div key={r.label}
-                    initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
-                    style={{
-                      padding: '14px 18px', borderRadius: 14, display: 'flex', alignItems: 'center', gap: 14,
-                      background: isKimi ? 'rgba(102,187,106,0.1)' : 'var(--glass-04)',
-                      border: `2px solid ${isKimi ? '#66bb6a88' : r.color + '33'}`,
-                    }}>
-                    <div style={{ minWidth: 110, fontSize: 16, color: r.color, fontWeight: 700 }}>{r.label}</div>
-                    <MathFormula
-                      formula={`\\frac{${r.ci.toFixed(3)}}{${r.delta.toFixed(2)}} = ${ratio.toFixed(1)}`}
-                      block style={{ fontSize: isKimi ? '1.8em' : '1.4em', color: isKimi ? '#66bb6a' : r.color, flex: 1, textAlign: 'center', fontWeight: isKimi ? 900 : 700 }}
-                    />
-                  </motion.div>
-                );
-              })}
-            </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div style={{ fontSize: 14, color: '#ef9a9a', fontWeight: 700, letterSpacing: '0.1em' }}>
+            {ML('\\varphi_1^{(j)}')}: G-OPTIMAL CRITERION
           </div>
+          {EX2_PAIRS.map((r, i) => i < sub && (
+            <motion.div key={r.label}
+              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+              style={{
+                padding: '18px 28px', borderRadius: 14, display: 'flex', alignItems: 'center', gap: 20,
+                background: r.gopt ? 'rgba(239,83,80,0.10)' : 'var(--glass-04)',
+                border: `2px solid ${r.gopt ? '#ef535066' : r.color + '33'}`,
+              }}>
+              <div style={{ fontSize: 19, color: r.color, fontWeight: 700, minWidth: 130 }}>{r.label}</div>
+              <MathFormula formula={`\\Delta={${r.delta.toFixed(2)}}`} style={{ display: 'inline', fontSize: '1.1em', color: 'var(--text-secondary)', minWidth: 90 }} />
+              <MathFormula formula={`\\varphi_1={${r.phi1.toFixed(4)}}`} block style={{ fontSize: '1.9em', color: r.gopt ? '#ef9a9a' : r.color, flex: 1, textAlign: 'center' }} />
+              {r.gopt && <div style={{ fontSize: 14, color: '#ef9a9a', fontWeight: 700, minWidth: 110 }}>← G-opt picks</div>}
+            </motion.div>
+          ))}
 
-          {/* Full-width verdict — after all 3 rows */}
+          {/* Bottom note */}
           {sub >= 3 && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-              style={{ padding: '14px 24px', borderRadius: 14, background: 'rgba(102,187,106,0.12)', border: '2px solid rgba(102,187,106,0.5)', fontSize: 20, color: '#66bb6a', fontWeight: 700, textAlign: 'center', flexShrink: 0 }}>
-              Kimi = {(EX2_CI_KIMI/EX2_DELTA_KIMI).toFixed(1)} is highest — missed by both obvious choice and G-optimal
+              style={{ padding: '14px 28px', borderRadius: 14, background: 'rgba(239,83,80,0.08)', border: '2px solid rgba(239,83,80,0.35)', textAlign: 'center', flexShrink: 0 }}>
+              <span style={{ fontSize: 20, fontWeight: 700, color: '#ef9a9a' }}>G-opt picks Fable–Llama</span>
+              <span style={{ fontSize: 18, color: 'var(--text-secondary)' }}> — uncertain, but Δ=0.90. Is this the pair we should care about?</span>
             </motion.div>
           )}
         </div>
@@ -368,13 +396,13 @@ function Step3({ sub }: { sub: number }) {
   );
 }
 
-// ── Step 4 — The fix: divide by Δ² ───────────────────────────────────────────
+// ── Step 4 - The fix: divide by Δ² ───────────────────────────────────────────
 function Step4({ sub }: { sub: number }) {
   const formulaExpanded = sub <= 1;
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 18, justifyContent: formulaExpanded ? 'center' : sub >= 3 ? 'flex-start' : 'center' }}>
 
-      {/* Formula card — single box that animates in place */}
+      {/* Formula card - single box that animates in place */}
       <motion.div
         layout
         animate={formulaExpanded
@@ -391,7 +419,7 @@ function Step4({ sub }: { sub: number }) {
         {formulaExpanded ? (
           <div>
             <div style={{ fontSize: 13, color: 'var(--gold)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 20 }}>
-              {sub === 0 ? 'G-OPTIMALITY (old)' : 'THE FIX — DIVIDE BY Δ²'}
+              {sub === 0 ? 'G-OPTIMALITY (old)' : 'THE FIX: DIVIDE BY Δ²'}
             </div>
             <AnimatePresence mode="wait">
               {sub === 0 ? (
@@ -423,14 +451,14 @@ function Step4({ sub }: { sub: number }) {
         )}
       </motion.div>
 
-      {/* Before / after comparison — sub>=2 */}
+      {/* Before / after comparison - sub>=2 */}
       {sub >= 2 && (
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
           style={{ display: 'flex', gap: 16, justifyContent: 'center', alignItems: 'center', flex: 1 }}>
 
           {/* G-optimal φ₁ */}
           <div style={{ width: 400, padding: '22px 26px', borderRadius: 16, background: 'rgba(239,83,80,0.07)', border: '2px solid rgba(239,83,80,0.4)' }}>
-            <div style={{ fontSize: 14, color: '#ef9a9a', fontWeight: 700, marginBottom: 18, letterSpacing: '0.08em' }}>G-OPTIMAL — uses φ₁ only</div>
+            <div style={{ fontSize: 14, color: '#ef9a9a', fontWeight: 700, marginBottom: 18, letterSpacing: '0.08em' }}>G-OPTIMAL: uses φ₁ only</div>
             {[
               { label: 'Fable–GPT',   val: EX2_PHI1_GPT,   color: '#ef5350' },
               { label: 'Fable–Kimi',  val: EX2_PHI1_KIMI,  color: '#66bb6a' },
@@ -442,7 +470,7 @@ function Step4({ sub }: { sub: number }) {
               </div>
             ))}
             <div style={{ borderTop: '1px solid rgba(239,83,80,0.3)', paddingTop: 10, fontSize: 17, color: '#ef9a9a', fontWeight: 700 }}>
-              Worst φ₁ = {EX2_PHI1_LLAMA.toFixed(4)} → Fable–Llama
+              Worst φ₁ = {EX2_PHI1_LLAMA.toFixed(4)} → Fable–Llama ✗
             </div>
           </div>
 
@@ -450,29 +478,29 @@ function Step4({ sub }: { sub: number }) {
 
           {/* Our φ = φ₁/Δ² */}
           <div style={{ width: 400, padding: '22px 26px', borderRadius: 16, background: 'rgba(102,187,106,0.08)', border: '2px solid rgba(102,187,106,0.5)' }}>
-            <div style={{ fontSize: 14, color: '#66bb6a', fontWeight: 700, marginBottom: 18, letterSpacing: '0.08em' }}>OUR OBJECTIVE — φ = φ₁/Δ²</div>
+            <div style={{ fontSize: 14, color: '#66bb6a', fontWeight: 700, marginBottom: 18, letterSpacing: '0.08em' }}>WiSDoM: φ = φ₁/Δ²</div>
             {[
-              { label: 'Fable–GPT',   val: EX2_PHI_GPT,   color: '#ef5350', note: '' },
-              { label: 'Fable–Kimi',  val: EX2_PHI_KIMI,  color: '#66bb6a', note: '← bottleneck' },
+              { label: 'Fable–GPT',   val: EX2_PHI_GPT,   color: '#ef5350', note: '← real threat (Δ=0.15)' },
+              { label: 'Fable–Kimi',  val: EX2_PHI_KIMI,  color: '#66bb6a', note: '' },
               { label: 'Fable–Llama', val: EX2_PHI_LLAMA, color: '#78909c', note: '' },
             ].map(r => (
               <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                 <span style={{ fontSize: 20, color: r.color, fontWeight: 700 }}>{r.label}</span>
                 <span style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                   <MathFormula formula={r.val.toFixed(2)} style={{ display: 'inline', fontSize: '1.5em', color: r.color, fontWeight: 700 }} />
-                  {r.note && <span style={{ fontSize: 14, color: '#66bb6a', fontWeight: 700 }}>{r.note}</span>}
+                  {r.note && <span style={{ fontSize: 13, color: '#ef9a9a', fontWeight: 700 }}>{r.note}</span>}
                 </span>
               </div>
             ))}
             <div style={{ borderTop: '1px solid rgba(102,187,106,0.3)', paddingTop: 10, fontSize: 17, color: '#66bb6a', fontWeight: 700 }}>
-              Worst φ = {EX2_PHI_KIMI.toFixed(2)} (Kimi) → Fable–Kimi
+              Worst φ = {EX2_PHI_GPT.toFixed(2)} → Fable–GPT ✓
             </div>
           </div>
         </motion.div>
       )}
 
-      {/* Question — sub=3 */}
-      {sub >= 3 && (
+      {/* Question - sub=2 */}
+      {sub >= 2 && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           style={{ padding: '16px 28px', borderRadius: 12, background: 'rgba(232,197,71,0.12)', border: '2px solid rgba(232,197,71,0.5)', fontSize: 22, fontWeight: 700, color: 'var(--gold)', textAlign: 'center', flexShrink: 0 }}>
           Now: how do we <em>optimally allocate</em> the entire budget B to minimise worst-case φ?
@@ -482,7 +510,7 @@ function Step4({ sub }: { sub: number }) {
   );
 }
 
-// ── Step 5 — Water-filling ────────────────────────────────────────────────────
+// ── Step 5 - Water-filling ────────────────────────────────────────────────────
 function BudgetBarsViz({ sub }: { sub: number }) {
   const kf = KEYFRAMES[sub];
   const isOptimal = sub === KEYFRAMES.length - 1;
@@ -493,7 +521,7 @@ function BudgetBarsViz({ sub }: { sub: number }) {
   const q_kimi  = Math.round((1 - kf.lamFG - kf.lamFL) * B);
   const q_llama = Math.round(kf.lamFL * B);
 
-  // Danger level — φ normalised: use 0..25 scale, clamp
+  // Danger level - φ normalised: use 0..25 scale, clamp
   const MAX_PHI = 25;
   const pairs = [
     { label: 'Fable vs GPT-5.6', gap: 'Δ=0.20', queries: q_gpt,   phi: kf.phi_gpt,   color: '#ef5350', isBottleneck: kf.phi_gpt   > kf.phi_kimi && kf.phi_gpt   > kf.phi_llama },
@@ -505,7 +533,7 @@ function BudgetBarsViz({ sub }: { sub: number }) {
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 16, justifyContent: 'center' }}>
       <div style={{ fontSize: 18, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
         Prior: 30 Fable–Kimi + 30 Kimi–GPT. Allocating <strong style={{ color: 'var(--text-primary)' }}>50 more queries.</strong>{' '}
-        Obvious choice: all on Fable–GPT. <strong style={{ color: '#ef5350' }}>But Llama has zero data — φ = ∞.</strong>
+        Obvious choice: all on Fable–GPT. <strong style={{ color: '#ef5350' }}>But Llama has zero data, so φ = ∞.</strong>
       </div>
 
       {/* Three pair cards side by side */}
@@ -514,7 +542,7 @@ function BudgetBarsViz({ sub }: { sub: number }) {
           const phiPct = Math.min(p.phi / MAX_PHI * 100, 100);
           const isInfinite = p.phi >= 24;
           const dangerColor = p.phi > 5 ? '#ef5350' : p.phi > 2 ? '#ffb74d' : '#66bb6a';
-          const dangerLabel = isInfinite ? '∞ — UNCONFIRMABLE' : p.phi > 5 ? 'HIGH RISK' : p.phi > 2 ? 'MODERATE' : 'SAFE';
+          const dangerLabel = isInfinite ? '∞ UNCONFIRMABLE' : p.phi > 5 ? 'HIGH RISK' : p.phi > 2 ? 'MODERATE' : 'SAFE';
           return (
             <div key={p.label} style={{
               flex: 1, padding: '18px 20px', borderRadius: 16,
@@ -580,8 +608,8 @@ function BudgetBarsViz({ sub }: { sub: number }) {
         {isOptimal
           ? <><strong style={{ color: 'var(--gold)' }}>Non-obvious answer:</strong> {q_gpt} queries on Fable–GPT (closest threat) <em>and</em> <strong style={{ color: '#78909c' }}>{q_llama} queries on Fable–Llama</strong> (never played). Without those {q_llama}, Llama φ=∞ and the algorithm fails.</>
           : sub === 0
-          ? <><strong style={{ color: '#ef5350' }}>0 queries on Llama → φ = ∞.</strong> All on Fable–GPT feels obvious — but Llama is completely unconfirmed. Press → to allocate some budget to it.</>
-          : <>φ(Llama) drops fast with each query. φ(GPT) barely changes. Stop when <strong style={{ color: 'var(--gold)' }}>both are equal</strong> — <strong style={{ color: 'var(--gold)' }}>water-filling</strong>.</>
+          ? <><strong style={{ color: '#ef5350' }}>0 queries on Llama → φ = ∞.</strong> All on Fable–GPT feels obvious, but Llama is completely unconfirmed. Press → to allocate some budget to it.</>
+          : <>φ(Llama) drops fast with each query. φ(GPT) barely changes. Stop when <strong style={{ color: 'var(--gold)' }}>both are equal</strong>: <strong style={{ color: 'var(--gold)' }}>water-filling</strong>.</>
         }
       </div>
       {!isOptimal && <div style={{ fontSize: 13, color: 'var(--glass-25)', textAlign: 'center', marginTop: 6 }}>→ shift budget ({sub + 1}/{KEYFRAMES.length})</div>}
@@ -593,17 +621,17 @@ function Step5Ellipse({ sub }: { sub: number }) {
   return <BudgetBarsViz sub={sub} />;
 }
 
-// ── Step 5 — The Objective + What Happens Next ───────────────────────────────
+// ── Step 5 - The Objective + What Happens Next ───────────────────────────────
 function Step5Objective() {
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 24, justifyContent: 'center' }}>
-      <Label text="The Objective — Solved Every Round" />
+      <Label text="The Objective: Solved Every Round" />
 
       {/* SDP equation */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         style={{ padding: '24px 40px', borderRadius: 16, background: 'rgba(232,197,71,0.07)', border: '2px solid rgba(232,197,71,0.45)', textAlign: 'center' }}>
         <div style={{ fontSize: 13, color: 'var(--gold)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 14 }}>
-          SEMIDEFINITE PROGRAM (SDP) — WINNER-FOCUSED EXPERIMENTAL DESIGN
+          SEMIDEFINITE PROGRAM (SDP): WINNER-FOCUSED EXPERIMENTAL DESIGN
         </div>
         <MathFormula
           formula={String.raw`\lambda^* = \arg\min_{\lambda \in \Delta_{\binom{\mathcal{C}}{2}}} \;\max_{j \in \mathcal{C} \setminus \{w\}}\; \frac{(e_w-e_j)^\top I(\theta;\lambda)^{-1}(e_w-e_j)}{\Delta_{wj}^2}`}
@@ -611,7 +639,7 @@ function Step5Objective() {
         />
       </motion.div>
 
-      {/* 4 step cards — title only, no body */}
+      {/* 4 step cards - title only, no body */}
       <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
         style={{ display: 'flex', gap: 0, borderRadius: 16, overflow: 'hidden', border: '1.5px solid var(--glass-12)' }}>
         {[
@@ -634,11 +662,11 @@ function Step5Objective() {
 function Step6Numbers() {
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14 }}>
-      <Label text="Solution — Convex SDP, Solved Every Round" />
+      <Label text="Solution: Convex SDP, Solved Every Round" />
 
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         style={{ padding: '16px 28px', borderRadius: 16, background: 'rgba(232,197,71,0.07)', border: '2px solid rgba(232,197,71,0.45)', textAlign: 'center' }}>
-        <div style={{ fontSize: 13, color: 'var(--gold)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 8 }}>CONVEX SDP — SOLVED EACH ROUND</div>
+        <div style={{ fontSize: 13, color: 'var(--gold)', fontWeight: 700, letterSpacing: '0.1em', marginBottom: 8 }}>CONVEX SDP: SOLVED EACH ROUND</div>
         <MathFormula formula={String.raw`\lambda^* = \arg\min_{\lambda \in \Delta_{\binom{\mathcal{C}}{2}}} \;\max_{j \in \mathcal{C} \setminus \{w\}}\; \frac{(e_w-e_j)^\top I(\theta;\lambda)^{-1}(e_w-e_j)}{\Delta_{wj}^2}`} block style={{ fontSize: '1.7em' }} />
         <div style={{ fontSize: 17, color: 'var(--text-secondary)', marginTop: 10 }}>
           Convex in λ (map λ ↦ vᵀI(θ;λ)⁻¹v is convex on the PSD cone; pointwise max of convex = convex).
@@ -649,7 +677,7 @@ function Step6Numbers() {
       <div style={{ display: 'flex', gap: 16 }}>
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}
           style={{ flex: 1, padding: '16px 22px', borderRadius: 16, background: 'rgba(239,83,80,0.08)', border: '2px solid rgba(239,83,80,0.45)' }}>
-          <div style={{ fontSize: 15, color: '#ef9a9a', fontWeight: 700, marginBottom: 10, letterSpacing: '0.08em' }}>BEFORE — Uniform λ = ⅓</div>
+          <div style={{ fontSize: 15, color: '#ef9a9a', fontWeight: 700, marginBottom: 10, letterSpacing: '0.08em' }}>BEFORE: Uniform λ = ⅓</div>
           {[['λ(Fable, GPT)', '33%'], ['λ(Fable, Kimi)', '33%'], ['λ(GPT, Kimi)', '33%']].map(([lbl, val]) => (
             <div key={lbl} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7, fontSize: 17, color: 'var(--text-secondary)' }}>
               <span>{lbl}</span><span style={{ fontWeight: 700, fontSize: 19 }}>{val}</span>
@@ -665,7 +693,7 @@ function Step6Numbers() {
 
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}
           style={{ flex: 1, padding: '16px 22px', borderRadius: 16, background: 'rgba(102,187,106,0.08)', border: '2px solid rgba(102,187,106,0.5)' }}>
-          <div style={{ fontSize: 15, color: '#66bb6a', fontWeight: 700, marginBottom: 10, letterSpacing: '0.08em' }}>AFTER — Optimal λ*</div>
+          <div style={{ fontSize: 15, color: '#66bb6a', fontWeight: 700, marginBottom: 10, letterSpacing: '0.08em' }}>AFTER: Optimal λ*</div>
           {[['λ*(Fable, GPT)', `${SDP_LAM_GPT}%`, true], ['λ*(Fable, Kimi)', '1.6%', false], ['λ*(GPT, Kimi)', '1.6%', false]].map(([lbl, val, big]) => (
             <div key={lbl as string} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7, fontSize: 17, color: big ? 'var(--gold)' : 'var(--text-secondary)' }}>
               <span>{lbl}</span><span style={{ fontWeight: big ? 900 : 700, fontSize: big ? 24 : 19 }}>{val}</span>
@@ -675,7 +703,7 @@ function Step6Numbers() {
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 17, marginBottom: 3 }}><span style={{ color: '#66bb6a' }}>φ (GPT)</span><span style={{ color: '#66bb6a', fontWeight: 800, fontSize: 26 }}>{SDP_PHI_GPT_OPT}</span></div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 17, marginBottom: 3 }}><span style={{ color: '#66bb6a' }}>φ (Kimi)</span><span style={{ color: '#66bb6a', fontWeight: 800, fontSize: 26 }}>{SDP_PHI_KIMI_OPT}</span></div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 17 }}><span style={{ color: '#66bb6a', fontWeight: 700 }}>worst-case</span><span style={{ color: '#66bb6a', fontWeight: 900, fontSize: 32, fontFamily: "'Space Grotesk',sans-serif" }}>{SDP_WORST_OPT}</span></div>
-            <div style={{ fontSize: 16, color: '#66bb6a', fontWeight: 700, marginTop: 5, textAlign: 'right' }}>↓ {SDP_IMPROVEMENT}% — φ(GPT) ≈ φ(Kimi) ✓</div>
+            <div style={{ fontSize: 16, color: '#66bb6a', fontWeight: 700, marginTop: 5, textAlign: 'right' }}>↓ {SDP_IMPROVEMENT}%, φ(GPT) ≈ φ(Kimi) ✓</div>
           </div>
         </motion.div>
       </div>
@@ -683,7 +711,7 @@ function Step6Numbers() {
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
         style={{ padding: '10px 22px', borderRadius: 10, background: 'rgba(79,195,247,0.07)', border: '1px solid rgba(79,195,247,0.3)', fontSize: 17, color: 'var(--text-secondary)', lineHeight: 1.55 }}>
         <strong style={{ color: 'var(--cyan)' }}>Why {SDP_LAM_GPT}% on Fable–GPT?</strong>{' '}
-        Gap Δ=0.05 is tiny — any σ² creates huge φ. Concentrating budget there reduces worst-case φ. WiSDoM solves this SDP every round.
+        Gap Δ=0.05 is tiny, so any σ² creates huge φ. Concentrating budget there reduces worst-case φ. WiSDoM solves this SDP every round.
       </motion.div>
     </div>
   );
@@ -702,7 +730,7 @@ export function MIPUnifiedSlide() {
         } else if (step > 0) {
           e.stopPropagation(); e.preventDefault();
           const prev = step - 1; setStep(prev);
-          // Step 5 is the animation — always start from sub=0 when entering it
+          // Step 5 is the animation - always start from sub=0 when entering it
           setSub(MAX_SUBS[prev]);
         }
         return;

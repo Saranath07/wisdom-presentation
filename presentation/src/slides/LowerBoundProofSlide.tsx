@@ -72,10 +72,10 @@ function Body({ children }: { children: React.ReactNode }) {
 
 // ─── Setup animation ─────────────────────────────────────────────────────────
 // 4 phases, each held for 2.2s, looping:
-//   0 — all N items, winner highlighted gold
-//   1 — show gap Δ arrow between winner and challengers
-//   2 — split: S (selected, K items) vs R (rejected, N-K items), x* lit red
-//   3 — two-worlds label: H₀ vs H_{x*}
+//   0 - all N items, winner highlighted gold
+//   1 - show gap Δ arrow between winner and challengers
+//   2 - split: S (selected, K items) vs R (rejected, N-K items), x* lit red
+//   3 - two-worlds label: H₀ vs H_{x*}
 
 const N_VIZ = 9;   // total items to visualise (winner + 8 challengers)
 const K_VIZ = 5;   // size of returned set S
@@ -208,7 +208,7 @@ function SetupAnimation() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 1 — Setup (then → reveals Step 1: KL bound)
+// SLIDE 1 - Setup (then → reveals Step 1: KL bound)
 // ══════════════════════════════════════════════════════════════════════════════
 const SLIDE1_STEPS = [
   { color: '#ce93d8' },
@@ -372,7 +372,7 @@ export function LowerBoundProof1Slide() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SLIDE 2 — Step 2: Pigeonhole + Step 3: B–H → result
+// SLIDE 2 - Step 2: Pigeonhole + Step 3: B–H → result
 // ══════════════════════════════════════════════════════════════════════════════
 
 const STEP2_ITEMS = [

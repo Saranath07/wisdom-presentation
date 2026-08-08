@@ -112,8 +112,8 @@ export function Phase2ClimbSlide() {
           </div>
           <h1 style={{ fontSize: 34, marginBottom: 0 }}>
             The{' '}
-            <span style={{ color: 'var(--gold)' }}>Climb</span>{' '}
-            — Winner Rising
+            <span style={{ color: 'var(--gold)' }}>Climb</span>:
+            Winner Rising
           </h1>
         </div>
 
@@ -129,7 +129,7 @@ export function Phase2ClimbSlide() {
 
       {/* Main content */}
       <div style={{ flex: 1, display: 'flex', gap: 24, minHeight: 0 }}>
-        {/* Leaderboard — the star */}
+        {/* Leaderboard - the star */}
         <div style={{
           width: 260,
           background: 'var(--card-bg)',
@@ -152,7 +152,7 @@ export function Phase2ClimbSlide() {
           </div>
         </div>
 
-        {/* Rank Centrality bars — the hero visual */}
+        {/* Rank Centrality bars - the hero visual */}
         <div style={{
           flex: 1,
           background: 'var(--card-bg)',
@@ -170,7 +170,7 @@ export function Phase2ClimbSlide() {
             </div>
           </div>
 
-          {/* Bars — sorted by rank centrality descending */}
+          {/* Bars - sorted by rank centrality descending */}
           <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: 6, paddingBottom: 24 }}>
             {[...current.items]
               .sort((a, b) => b.rankCentrality - a.rankCentrality)
@@ -458,7 +458,7 @@ export function Phase2ClimbSlide() {
                   </span>
                 ) : (
                   <span style={{ color: 'var(--red)' }}>
-                    Near-miss — predicted #{predictedWinner.id} (true: #{current.trueWinnerId})
+                    Near-miss: predicted #{predictedWinner.id} (true: #{current.trueWinnerId})
                   </span>
                 )}
               </div>
