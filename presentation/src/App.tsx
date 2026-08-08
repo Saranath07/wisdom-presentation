@@ -11,6 +11,7 @@ import { WiSDoMAlgorithmSlide } from './slides/WiSDoMAlgorithmSlide';
 import { FutureWorkSlide } from './slides/FutureWorkSlide';
 import { LowerBoundTheoremSlide, EmpiricalValidationSlide, ExperimentSetupSlide, SyntheticResultsSlide, RealWorldSetupSlide, RealWorldResultsSlide } from './slides/ResultsSlides';
 import { LowerBoundProof1Slide, LowerBoundProof2Slide } from './slides/LowerBoundProofSlide';
+import { DMControlSlide } from './slides/DMControlSlide';
 
 const SLIDES = [
   { component: TitleSlide, title: 'WiSDoM' },
@@ -24,6 +25,7 @@ const SLIDES = [
   { component: SyntheticResultsSlide, title: 'Results: Synthetic' },
   { component: RealWorldSetupSlide, title: 'Real-World Datasets' },
   { component: RealWorldResultsSlide, title: 'Results: Real World' },
+  { component: DMControlSlide, title: 'DMControl: Video Evidence' },
   { component: LowerBoundTheoremSlide, title: 'Lower Bound Theorem' },
   { component: LowerBoundProof1Slide, title: 'Lower Bound Proof 1/2' },
   { component: LowerBoundProof2Slide, title: 'Lower Bound Proof 2/2' },
