@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const BASE = import.meta.env.BASE_URL;
+
 // ── Data ─────────────────────────────────────────────────────────────────────
 
 interface VideoMeta {
@@ -91,7 +93,7 @@ function VideoCard({ v, temp }: { v: VideoMeta; temp: 'T20' | 'T200' }) {
       {/* Video */}
       <video
         ref={ref}
-        src={`/videos/dmcontrol/${v.file}`}
+        src={`${BASE}videos/dmcontrol/${v.file}`}
         loop
         muted
         playsInline
@@ -353,7 +355,7 @@ export function DMControlSlide() {
                 }}
               >
                 <img
-                  src={`/data/real_ACC_dmcontrol_${temp === 'T20' ? 'T20' : 'T200'}.png`}
+                  src={`${BASE}data/real_ACC_dmcontrol_${temp === 'T20' ? 'T20' : 'T200'}.png`}
                   alt={`DMControl ${temp} accuracy`}
                   style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                 />

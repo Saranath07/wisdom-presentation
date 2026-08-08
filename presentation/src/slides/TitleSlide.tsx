@@ -47,7 +47,7 @@ export function TitleSlide() {
           borderRadius: 20,
         }}
       >
-        KDD 2026 · Research Track
+        KDD 2026 · The 5th Workshop on Uncertainty Reasoning and Quantification in Decision Making
       </motion.div>
 
       {/* Main title */}
@@ -122,6 +122,110 @@ export function TitleSlide() {
             </div>
           </div>
         ))}
+      </motion.div>
+
+      {/* KDD Logo */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.3, duration: 0.6 }}
+        style={{
+          position: 'absolute',
+          bottom: 36,
+          right: 40,
+          background: 'white',
+          borderRadius: 10,
+          padding: '8px 14px',
+          boxShadow: '0 2px 16px rgba(0,0,0,0.35)',
+        }}
+      >
+        <img
+          src={`${import.meta.env.BASE_URL}KDD26-Logo4-black.png`}
+          alt="KDD 2026"
+          style={{ height: 44, display: 'block' }}
+        />
+      </motion.div>
+
+      {/* Paper link */}
+      <motion.a
+        href={`${import.meta.env.BASE_URL}wisdom-paper.pdf`}
+        target="_blank"
+        rel="noopener noreferrer"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.6, duration: 0.5 }}
+        style={{
+          position: 'absolute',
+          top: 28,
+          right: 40,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 7,
+          padding: '6px 14px',
+          borderRadius: 20,
+          background: 'rgba(201,162,39,0.12)',
+          border: '1px solid rgba(201,162,39,0.4)',
+          color: 'var(--gold)',
+          fontSize: 12,
+          fontWeight: 600,
+          textDecoration: 'none',
+          letterSpacing: '0.03em',
+          cursor: 'pointer',
+        }}
+      >
+        <span>📄</span>
+        <span>Read the Paper</span>
+      </motion.a>
+
+      {/* KDD Logo — bottom right */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.3, duration: 0.6 }}
+        style={{
+          position: 'absolute',
+          bottom: 36,
+          right: 40,
+          background: 'white',
+          borderRadius: 10,
+          padding: '8px 14px',
+          boxShadow: '0 2px 16px rgba(0,0,0,0.35)',
+        }}
+      >
+        <img
+          src={`${import.meta.env.BASE_URL}KDD26-Logo4-black.png`}
+          alt="KDD 2026"
+          style={{ height: 44, display: 'block' }}
+        />
+      </motion.div>
+
+      {/* LinkedIn QR — bottom left */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.3, duration: 0.6 }}
+        style={{
+          position: 'absolute',
+          bottom: 28,
+          left: 40,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 6,
+        }}
+      >
+        <img
+          src={`${import.meta.env.BASE_URL}linkedin-qr.png`}
+          alt="LinkedIn QR"
+          style={{
+            width: 90, height: 90,
+            borderRadius: 8,
+            boxShadow: '0 2px 12px rgba(0,0,0,0.4)',
+          }}
+        />
+        <span style={{ fontSize: 10, color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>
+          Connect on LinkedIn
+        </span>
       </motion.div>
 
       {/* Bottom pulse hint */}

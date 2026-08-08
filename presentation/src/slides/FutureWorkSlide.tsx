@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 
+const BASE = import.meta.env.BASE_URL;
+
 const QUESTIONS = [
   { color: '#e8c547', number: '01', bold: 'Exact Bernoulli KL divergence' },
   { color: '#4fc3f7', number: '02', bold: 'Matching upper bound' },
@@ -22,6 +24,29 @@ export function FutureWorkSlide() {
           Open <span style={{ color: 'var(--gold)' }}>questions</span>
         </h1>
       </div>
+
+      {/* Paper link */}
+      <motion.a
+        href={`${BASE}wisdom-paper.pdf`}
+        target="_blank"
+        rel="noopener noreferrer"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        style={{
+          alignSelf: 'flex-start',
+          display: 'flex', alignItems: 'center', gap: 7,
+          padding: '6px 16px', borderRadius: 20,
+          background: 'rgba(201,162,39,0.12)',
+          border: '1px solid rgba(201,162,39,0.4)',
+          color: 'var(--gold)', fontSize: 12, fontWeight: 600,
+          textDecoration: 'none', letterSpacing: '0.03em',
+          flexShrink: 0,
+        }}
+      >
+        <span>📄</span>
+        <span>Read the Paper — saranath07.github.io/wisdom-presentation/wisdom-paper.pdf</span>
+      </motion.a>
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12, minHeight: 0, justifyContent: 'center' }}>
         {QUESTIONS.map((q, i) => (
